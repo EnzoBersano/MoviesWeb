@@ -1,0 +1,89 @@
+/* Página de resultados por keyword */
+.keyword-header {
+    margin-bottom: 30px;
+    padding: 30px;
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    text-align: center;
+}
+
+.keyword-header h1 {
+    font-size: 2rem;
+    color: var(--secondary-color);
+}
+
+.keyword-name {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.results-count {
+    margin-bottom: 25px;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+/* Grid de películas */
+.movies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.movie-card {
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    transition: var(--transition);
+}
+
+.movie-card:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-4px);
+    border-color: var(--primary-color);
+}
+
+.movie-link {
+    display: block;
+    color: inherit;
+}
+
+.movie-title {
+    color: var(--secondary-color);
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+}
+
+.movie-year {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.movie-rating {
+    color: var(--primary-color);
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.movie-overview {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .keyword-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .movies-grid {
+        grid-template-columns: 1fr;
+    }
+}

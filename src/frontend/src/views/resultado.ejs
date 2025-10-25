@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados de Búsqueda</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/resultado.css">
+</head>
+<body>
+<div class="container">
+    <h1 class="page-title">Resultados de búsqueda: "<%= searchTerm %>"</h1>
+
+    <div class="home-link">
+        <a href="/">← Volver al inicio</a>
+    </div>
+
+    <%
+    const totalMovies = movies.length;
+    const totalActors = actors.length;
+    const totalDirectors = directors.length;
+    const totalKeywords = keywords.length;
+    const total = totalMovies + totalActors + totalDirectors + totalKeywords;
+    %>
+
+    <% if (total === 0) { %>
+        <div class="no-results">
+            <p>No se encontraron resultados para "<%= searchTerm %>"</p>
+        </div>
+    <% } else { %>
+        <!-- Navbar con tabs -->
+        <div class="tabs-nav">
+            <button class="tab-button active" data-tab="movies">
+                Películas (<%= totalMovies %>)
+            </button>
+            <button class="tab-button" data-tab="actors">
+                Actores (<%= totalActors %>)
+            </button>
+            <button class="tab-button" data-tab="directors">
+                Directores (<%= totalDirectors %>)
+            </button>
+            <button class="tab-button" data-tab="keywords">
+                Keywords (<%= totalKeywords %>)
+            </button>
+        </div>
+
+        <!-- Sección de Películas -->
+        <div class="tab-content active" id="movies">
+            <% if (totalMovies === 0) { %>
+                <p class="empty-section">No se encontraron películas</p>
+            <% } else { %>
+                <div class="results-grid">
+                    <% movies.forEach(movie => { %>
+                        <div class="result-card">
+                            <a href="/pelicula/<%= movie.movie_id %>" class="result-link">
+                                <h3><%= movie.title %></h3>
+                                <% if (movie.release_date) { %>
+                                    <p class="meta">Año: <%= new Date(movie.release_date).getFullYear() %></p>
+                                <% } %>
+                                <% if (movie.overview) { %>
+                                    <p class="overview"><%= movie.overview.substring(0, 150) %>...</p>
+                                <% } %>
+                            </a>
+                        </div>
+                    <% }); %>
+                </div>
+            <% } %>
+        </div>
+
+        <!-- Sección de Actores -->
+        <div class="tab-content" id="actors">
+            <% if (totalActors === 0) { %>
+                <p class="empty-section">No se encontraron actores</p>
+            <% } else { %>
+                <div class="results-list">
+                    <% actors.forEach(actor => { %>
+                        <div class="result-item">
+                            <a href="/actor/<%= actor.person_id %>" class="result-link">
+                                <span class="person-icon">🎭</span>
+                                <span class="person-name"><%= actor.person_name %></span>
+                            </a>
+                        </div>
+                    <% }); %>
+                </div>
+            <% } %>
+        </div>
+
+        <!-- Sección de Directores -->
+        <div class="tab-content" id="directors">
+            <% if (totalDirectors === 0) { %>
+                <p class="empty-section">No se encontraron directores</p>
+            <% } else { %>
+                <div class="results-list">
+                    <% directors.forEach(director => { %>
+                        <div class="result-item">
+                            <a href="/director/<%= director.person_id %>" class="result-link">
+                                <span class="person-icon">🎬</span>
+                                <span class="person-name"><%= director.person_name %></span>
+                            </a>
+                        </div>
+                    <% }); %>
+                </div>
+            <% } %>
+        </div>
+
+        <!-- Sección de Keywords -->
+        <div class="tab-content" id="keywords">
+            <% if (totalKeywords === 0) { %>
+                <p class="empty-section">No se encontraron keywords</p>
+            <% } else { %>
+                <div class="keywords-grid">
+                    <% keywords.forEach(keyword => { %>
+                        <div class="keyword-tag">
+                            <a href="/keyword/<%= keyword.keyword_id %>/movies?name=<%= encodeURIComponent(keyword.keyword_name) %>" class="keyword-link">
+                                #<%= keyword.keyword_name %>
+                            </a>
+                        </div>
+                    <% }); %>
+                </div>
+            <% } %>
+        </div>
+    <% } %>
+</div>
+
+<script src="/js/resultado.js"></script>
+</body>
+</html>

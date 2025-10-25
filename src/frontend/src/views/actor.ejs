@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= actorName %> - MovieWeb</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/person.css">
+</head>
+<body>
+<div class="container">
+    <div class="home-link">
+        <a href="/">← Volver al inicio</a>
+    </div>
+
+    <div class="person-header">
+        <span class="person-icon">🎭</span>
+        <div>
+            <h1 class="person-name"><%= actorName %></h1>
+            <p class="person-role">Actor/Actriz</p>
+        </div>
+    </div>
+
+    <div class="movies-section">
+        <h2>Filmografía (<%= movies.length %> películas)</h2>
+
+        <% if (movies.length === 0) { %>
+            <p class="no-movies">No se encontraron películas.</p>
+        <% } else { %>
+            <div class="movies-grid">
+                <% movies.forEach(movie => { %>
+                    <div class="movie-card">
+                        <a href="/pelicula/<%= movie.movie_id %>" class="movie-link">
+                            <h3 class="movie-title"><%= movie.title %></h3>
+                            <% if (movie.release_date) { %>
+                                <p class="movie-year"><%= new Date(movie.release_date).getFullYear() %></p>
+                            <% } %>
+                            <% if (movie.overview) { %>
+                                <p class="movie-overview"><%= movie.overview.substring(0, 100) %>...</p>
+                            <% } %>
+                        </a>
+                    </div>
+                <% }); %>
+            </div>
+        <% } %>
+    </div>
+</div>
+</body>
+</html>

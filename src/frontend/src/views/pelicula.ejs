@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= movie.title %> - MovieWeb</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/movie.css">
+</head>
+<body>
+<div class="container">
+    <div class="home-link">
+        <a href="/">← Volver al inicio</a>
+    </div>
+
+    <div class="movie-header">
+        <h1 class="movie-title"><%= movie.title %></h1>
+        <% if (movie.tagline) { %>
+            <p class="movie-tagline"><%= movie.tagline %></p>
+        <% } %>
+    </div>
+
+    <div class="movie-info">
+        <!-- Información básica -->
+        <div class="info-section">
+            <h2>Información General</h2>
+            <div class="info-grid">
+                <% if (movie.release_date) { %>
+                    <div class="info-item">
+                        <span class="label">Fecha de estreno:</span>
+                        <span class="value"><%= new Date(movie.release_date).toLocaleDateString('es-ES') %></span>
+                    </div>
+                <% } %>
+                <% if (movie.runtime) { %>
+                    <div class="info-item">
+                        <span class="label">Duración:</span>
+                        <span class="value"><%= movie.runtime %> minutos</span>
+                    </div>
+                <% } %>
+                <% if (movie.vote_average) { %>
+                    <div class="info-item">
+                        <span class="label">Calificación:</span>
+                        <span class="value">⭐ <%= movie.vote_average %>/10 (<%= movie.vote_count %> votos)</span>
+                    </div>
+                <% } %>
+                <% if (movie.movie_status) { %>
+                    <div class="info-item">
+                        <span class="label">Estado:</span>
+                        <span class="value"><%= movie.movie_status %></span>
+                    </div>
+                <% } %>
+                <% if (movie.budget && movie.budget > 0) { %>
+                    <div class="info-item">
+                        <span class="label">Presupuesto:</span>
+                        <span class="value">$<%= movie.budget.toLocaleString() %></span>
+                    </div>
+                <% } %>
+                <% if (movie.revenue && movie.revenue > 0) { %>
+                    <div class="info-item">
+                        <span class="label">Recaudación:</span>
+                        <span class="value">$<%= movie.revenue.toLocaleString() %></span>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Sinopsis -->
+        <% if (movie.overview) { %>
+            <div class="info-section">
+                <h2>Sinopsis</h2>
+                <p class="overview"><%= movie.overview %></p>
+            </div>
+        <% } %>
+
+        <!-- Géneros -->
+        <% if (movie.genres && movie.genres.length > 0) { %>
+            <div class="info-section">
+                <h2>Géneros</h2>
+                <div class="tags">
+                    <% movie.genres.forEach(genre => { %>
+                        <span class="tag"><%= genre.genre_name %></span>
+                    <% }); %>
+                </div>
+            </div>
+        <% } %>
+
+        <!-- Directores -->
+        <% if (movie.directors && movie.directors.length > 0) { %>
+            <div class="info-section">
+                <h2>Dirección</h2>
+                <div class="person-list">
+                    <% movie.directors.forEach(director => { %>
+                        <div class="person-item">
+                            <a href="/director/<%= director.crew_member_id %>">
+                                <%= director.crew_member_name %>
+                            </a>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+        <% } %>
+
+        <!-- Escritores -->
+        <% if (movie.writers && movie.writers.length > 0) { %>
+            <div class="info-section">
+                <h2>Guión</h2>
+                <div class="person-list">
+                    <% movie.writers.forEach(writer => { %>
+                        <div class="person-item">
+                            <%= writer.crew_member_name %> (<%= writer.job %>)
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+        <% } %>
+
+        <!-- Elenco -->
+        <% if (movie.cast && movie.cast.length > 0) { %>
+            <div class="info-section">
+                <h2>Elenco Principal</h2>
+                <div class="cast-grid">
+                    <% movie.cast.slice(0, 12).forEach(actor => { %>
+                        <div class="cast-card">
+                            <a href="/actor/<%= actor.actor_id %>">
+                                <p class="actor-name"><%= actor.actor_name %></p>
+                                <p class="character-name"><%= actor.character_name %></p>
+                            </a>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+        <% } %>
+
+        <!-- Países de producción -->
+        <% if (movie.countries && movie.countries.length > 0) { %>
+            <div class="info-section">
+                <h2>Países</h2>
+                <div class="tags">
+                    <% movie.countries.forEach(country => { %>
+                        <span class="tag"><%= country.country_name %></span>
+                    <% }); %>
+                </div>
+            </div>
+        <% } %>
+
+        <!-- Compañías productoras -->
+        <% if (movie.companies && movie.companies.length > 0) { %>
+            <div class="info-section">
+                <h2>Productoras</h2>
+                <div class="company-list">
+                    <% movie.companies.forEach(company => { %>
+                        <div class="company-item"><%= company.company_name %></div>
+                    <% }); %>
+                </div>
+            </div>
+        <% } %>
+
+        <!-- Keywords -->
+        <% if (movie.keywords && movie.keywords.length > 0) { %>
+            <div class="info-section">
+                <h2>Palabras Clave</h2>
+                <div class="keywords-container">
+                    <% movie.keywords.forEach(keyword => { %>
+                        <a href="/keyword/<%= keyword.keyword_id %>/movies?name=<%= encodeURIComponent(keyword.keyword_name) %>" class="keyword-tag">
+                            #<%= keyword.keyword_name %>
+                        </a>
+                    <% }); %>
+                </div>
+            </div>
+        <% } %>
+
+        <!-- Crew adicional -->
+        <% if (movie.crew && movie.crew.length > 0) { %>
+            <div class="info-section">
+                <h2>Equipo Técnico</h2>
+                <div class="crew-list">
+                    <%
+                        const departments = {};
+                        movie.crew.forEach(member => {
+                            if (!departments[member.department_name]) {
+                                departments[member.department_name] = [];
+                            }
+                            departments[member.department_name].push(member);
+                        });
+                    %>
+                    <% Object.keys(departments).forEach(dept => { %>
+                        <div class="crew-department">
+                            <h3><%= dept %></h3>
+                            <ul>
+                                <% departments[dept].slice(0, 5).forEach(member => { %>
+                                    <li><%= member.crew_member_name %> - <%= member.job %></li>
+                                <% }); %>
+                            </ul>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+        <% } %>
+
+        <!-- Homepage -->
+        <% if (movie.homepage) { %>
+            <div class="info-section">
+                <a href="<%= movie.homepage %>" target="_blank" class="homepage-link">
+                    Sitio web oficial →
+                </a>
+            </div>
+        <% } %>
+    </div>
+</div>
+</body>
+</html>

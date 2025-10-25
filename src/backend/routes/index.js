@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-const searchController = require('../controllers/searchController');
-const movieController = require('../controllers/movieController');
-const personController = require('../controllers/personController');
+const searchController = require('../controllers/search.controller');
+const movieController = require('../controllers/movie.controller');
+const personController = require('../controllers/person.controller');
 
 // Ruta principal
 router.get('/', (req, res) => {

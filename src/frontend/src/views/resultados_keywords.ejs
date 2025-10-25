@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Películas con keyword: <%= keywordName %> - MovieWeb</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/keyword.css">
+</head>
+<body>
+<div class="container">
+    <div class="home-link">
+        <a href="/">← Volver al inicio</a>
+    </div>
+
+    <div class="keyword-header">
+        <h1>Películas con la palabra clave: <span class="keyword-name">#<%= keywordName %></span></h1>
+    </div>
+
+    <div class="movies-section">
+        <p class="results-count">Se encontraron <%= movies.length %> películas</p>
+
+        <% if (movies.length === 0) { %>
+            <p class="no-movies">No se encontraron películas con esta palabra clave.</p>
+        <% } else { %>
+            <div class="movies-grid">
+                <% movies.forEach(movie => { %>
+                    <div class="movie-card">
+                        <a href="/pelicula/<%= movie.movie_id %>" class="movie-link">
+                            <h3 class="movie-title"><%= movie.title %></h3>
+                            <% if (movie.release_date) { %>
+                                <p class="movie-year"><%= new Date(movie.release_date).getFullYear() %></p>
+                            <% } %>
+                            <% if (movie.vote_average) { %>
+                                <p class="movie-rating">⭐ <%= movie.vote_average %>/10</p>
+                            <% } %>
+                            <% if (movie.overview) { %>
+                                <p class="movie-overview"><%= movie.overview.substring(0, 120) %>...</p>
+                            <% } %>
+                        </a>
+                    </div>
+                <% }); %>
+            </div>
+        <% } %>
+    </div>
+</div>
+</body>
+</html>
