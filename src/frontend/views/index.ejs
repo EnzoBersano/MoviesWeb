@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovieWeb</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/search.css">
+</head>
+<body>
+<div class="container">
+    <h1 class="title">MovieWeb</h1>
+    <p class="subtitle">Busca películas, actores, directores y palabras clave</p>
+
+    <form action="/buscar" method="GET" class="search-form">
+        <input
+                type="text"
+                name="q"
+                placeholder="Buscar películas, actores, directores..."
+                class="search-input"
+                required
+        />
+        <button type="submit" class="search-button">Buscar</button>
+    </form>
+</div>
+</body>
+</html>
