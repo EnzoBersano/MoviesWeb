@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= user.user_name %> - MovieWeb</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/users.css">
+</head>
+<body>
+<div class="container">
+    <div class="home-link">
+        <a href="/users">← Volver a usuarios</a>
+    </div>
+
+    <div class="profile-header">
+        <div class="profile-info">
+            <h1><%= user.user_name %></h1>
+            <p class="username">@<%= user.user_username %></p>
+            <p class="email"><%= user.user_email %></p>
+        </div>
+        <div class="profile-actions">
+            <a href="/users/<%= user.user_id %>/edit" class="btn btn-warning">Editar Usuario</a>
+        </div>
+    </div>
+
+    <!-- Formulario para agregar película -->
+    <div class="add-movie-section">
+        <h2>Agregar Película</h2>
+        <form action="/users/<%= user.user_id %>/movies/add" method="POST" class="add-movie-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="movieId">ID de Película *</label>
+                    <input
+                            type="number"
+                            id="movieId"
+                            name="movieId"
+                            required
+                            placeholder="Ej: 5"
+                    >
+                    <small>Puedes encontrar el ID en la URL de la película</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="rating">Puntuación (0-10)</label>
+                    <input
+                            type="number"
+                            id="rating"
+                            name="rating"
+                            min="0"
+                            max="10"
+                            step="0.1"
+                            placeholder="Ej: 8.5"
+                    >
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="opinion">Opinión</label>
+                <textarea
+                        id="opinion"
+                        name="opinion"
+                        rows="3"
+                        placeholder="Escribe tu opinión sobre esta película..."
+                ></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Agregar Película</button>
+        </form>
+    </div>
+
+    <!-- Lista de películas del usuario -->
+    <div class="user-movies-section">
+        <h2>Películas de <%= user.user_name %> (<%= movies.length %>)</h2>
+
+        <% if (movies.length === 0) { %>
+            <div class="no-movies">
+                <p>Este usuario aún no ha agregado películas.</p>
+            </div>
+        <% } else { %>
+            <div class="movies-list">
+                <% movies.forEach(movie => { %>
+                    <div class="movie-item">
+                        <div class="movie-info">
+                            <h3>
+                                <a href="/pelicula/<%= movie.movie_id %>"><%= movie.title %></a>
+                            </h3>
+                            <% if (movie.release_date) { %>
+                                <p class="movie-year"><%= new Date(movie.release_date).getFullYear() %></p>
+                            <% } %>
+
+                            <% if (movie.rating) { %>
+                                <div class="user-rating">
+                                    <span class="rating-label">Tu puntuación:</span>
+                                    <span class="rating-value">⭐ <%= movie.rating %>/10</span>
+                                </div>
+                            <% } %>
+
+                            <% if (movie.opinion) { %>
+                                <div class="user-opinion">
+                                    <p class="opinion-label">Tu opinión:</p>
+                                    <p class="opinion-text"><%= movie.opinion %></p>
+                                </div>
+                            <% } %>
+
+                            <p class="added-date">
+                                Agregada el: <%= new Date(movie.created_at).toLocaleDateString('es-ES') %>
+                            </p>
+                        </div>
+
+                        <div class="movie-actions">
+                            <form action="/users/<%= user.user_id %>/movies/<%= movie.movie_id %>/remove" method="POST" onsubmit="return confirm('¿Eliminar esta película?');">
+                                <button type="submit" class="btn btn-small btn-danger">Eliminar</button>
+                            </form>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        <% } %>
+    </div>
+</div>
+</body>
+</html>

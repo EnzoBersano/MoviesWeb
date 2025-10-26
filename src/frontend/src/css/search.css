@@ -1,113 +1,122 @@
-/* Reset y variables globales */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-:root {
-    --primary-color: #0078d4;
-    --primary-hover: #0056b3;
-    --secondary-color: #2c3e50;
-    --background: #f5f7fa;
-    --card-background: #ffffff;
-    --text-primary: #333333;
-    --text-secondary: #666666;
-    --border-color: #e1e4e8;
-    --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.15);
-    --border-radius: 8px;
-    --transition: all 0.3s ease;
-}
-
+/* Página de inicio - Buscador */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--background);
-    color: var(--text-primary);
-    line-height: 1.6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     min-height: 100vh;
 }
 
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
+    text-align: center;
+    width: 100%;
+    max-width: 700px;
 }
 
-/* Links comunes */
-a {
-    color: var(--primary-color);
-    text-decoration: none;
-    transition: var(--transition);
-}
-
-a:hover {
-    color: var(--primary-hover);
-}
-
-.home-link {
-    margin-bottom: 20px;
-}
-
-.home-link a {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 8px 16px;
-    background-color: var(--card-background);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    font-weight: 500;
-    transition: var(--transition);
-}
-
-.home-link a:hover {
-    background-color: var(--background);
-    border-color: var(--primary-color);
-}
-
-/* Títulos */
-h1, h2, h3 {
+.title {
+    font-size: 3.5rem;
     color: var(--secondary-color);
     margin-bottom: 15px;
+    font-weight: 700;
+    letter-spacing: -1px;
 }
 
-h1 {
-    font-size: 2.5rem;
-    font-weight: 600;
-}
-
-h2 {
-    font-size: 1.8rem;
-    font-weight: 600;
-}
-
-h3 {
-    font-size: 1.3rem;
-    font-weight: 500;
-}
-
-/* Utilidades */
-.no-results,
-.empty-section,
-.no-movies {
-    text-align: center;
-    padding: 40px 20px;
-    color: var(--text-secondary);
+.subtitle {
     font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 40px;
+}
+
+.search-form {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: stretch;
+    flex-wrap: wrap;
+}
+
+.search-input {
+    flex: 1;
+    min-width: 250px;
+    padding: 15px 20px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 1.1rem;
+    transition: var(--transition);
+    background-color: var(--card-background);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.1);
+}
+
+.search-button {
+    padding: 15px 35px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap;
+}
+
+.search-button:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+}
+
+.search-button:active {
+    transform: translateY(0);
+}
+
+/* Quick links */
+.quick-links {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.quick-link {
+    padding: 12px 24px;
+    background-color: var(--card-background);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    color: var(--primary-color);
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.quick-link:hover {
+    border-color: var(--primary-color);
+    background-color: rgba(0, 120, 212, 0.05);
+    transform: translateY(-2px);
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-    .container {
-        padding: 15px;
+    .title {
+        font-size: 2.5rem;
     }
 
-    h1 {
-        font-size: 2rem;
+    .subtitle {
+        font-size: 1rem;
     }
 
-    h2 {
-        font-size: 1.5rem;
+    .search-form {
+        flex-direction: column;
+    }
+
+    .search-input {
+        min-width: 100%;
+    }
+
+    .search-button {
+        width: 100%;
     }
 }

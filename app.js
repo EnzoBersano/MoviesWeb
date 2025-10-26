@@ -19,6 +19,15 @@ app.use('/assets', express.static(path.join(__dirname, 'frontend/src/assets')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Middleware para sobrescribir métodos (para DELETE via POST)
+app.use((req, res, next) => {
+    if (req.body && req.body._method) {
+        req.method = req.body._method.toUpperCase();
+        delete req.body._method;
+    }
+    next();
+});
+
 // Usar las rutas
 app.use('/', routes);
 

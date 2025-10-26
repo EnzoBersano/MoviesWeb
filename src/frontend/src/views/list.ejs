@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios - MovieWeb</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/users.css">
+</head>
+<body>
+<div class="container">
+    <div class="home-link">
+        <a href="/">← Volver al inicio</a>
+    </div>
+
+    <div class="page-header">
+        <h1>Gestión de Usuarios</h1>
+        <a href="/users/create" class="btn btn-primary">+ Crear Usuario</a>
+    </div>
+
+    <% if (users.length === 0) { %>
+        <div class="no-results">
+            <p>No hay usuarios registrados.</p>
+            <a href="/users/create" class="btn btn-primary">Crear primer usuario</a>
+        </div>
+    <% } else { %>
+        <div class="users-table">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% users.forEach(user => { %>
+                    <tr>
+                        <td><%= user.user_id %></td>
+                        <td><strong><%= user.user_username %></strong></td>
+                        <td><%= user.user_name %></td>
+                        <td><%= user.user_email %></td>
+                        <td class="actions">
+                            <a href="/users/<%= user.user_id %>" class="btn btn-small btn-info">Ver</a>
+                            <a href="/users/<%= user.user_id %>/edit" class="btn btn-small btn-warning">Editar</a>
+                            <form action="/users/<%= user.user_id %>/delete" method="POST" style="display: inline;" onsubmit="return confirm('¿Estás seguro de eliminar este usuario?');">
+                                <button type="submit" class="btn btn-small btn-danger">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                <% }); %>
+                </tbody>
+            </table>
+        </div>
+    <% } %>
+</div>
+</body>
+</html>

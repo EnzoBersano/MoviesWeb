@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Usuario - MovieWeb</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/users.css">
+</head>
+<body>
+<div class="container">
+    <div class="home-link">
+        <a href="/users">← Volver a usuarios</a>
+    </div>
+
+    <div class="form-container">
+        <h1>Crear Nuevo Usuario</h1>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="alert alert-error">
+                <%= error %>
+            </div>
+        <% } %>
+
+        <form action="/users/create" method="POST" class="user-form">
+            <div class="form-group">
+                <label for="username">Username *</label>
+                <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        value="<%= typeof formData !== 'undefined' ? formData.username : '' %>"
+                        required
+                        placeholder="Ej: johndoe"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="name">Nombre Completo *</label>
+                <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value="<%= typeof formData !== 'undefined' ? formData.name : '' %>"
+                        required
+                        placeholder="Ej: John Doe"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email *</label>
+                <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value="<%= typeof formData !== 'undefined' ? formData.email : '' %>"
+                        required
+                        placeholder="Ej: john@example.com"
+                >
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Crear Usuario</button>
+                <a href="/users" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
