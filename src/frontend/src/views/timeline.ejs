@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/timeline.css">
+</head>
+<body>
+<div class="container">
+    <a href="/" class="back-button">Volver al inicio</a>
+
+    <div class="header">
+        <h1>Timeline de Actividad</h1>
+        <p>Usuario: <%= userId %></p>
+
+        <div class="stats">
+            <div class="stat-card">
+                <h3><%= stats.ratings %></h3>
+                <p>Calificaciones</p>
+            </div>
+            <div class="stat-card">
+                <h3><%= stats.reviews %></h3>
+                <p>Reseñas</p>
+            </div>
+            <div class="stat-card">
+                <h3><%= stats.favorites %></h3>
+                <p>Favoritos</p>
+            </div>
+            <div class="stat-card">
+                <h3><%= stats.totalActivities %></h3>
+                <p>Total</p>
+            </div>
+        </div>
+    </div>
+
+    <% if (activities.length === 0) { %>
+        <div class="empty-state">
+            <h2>Sin actividad reciente</h2>
+            <p>Aún no hay actividades registradas para este usuario.</p>
+        </div>
+    <% } else { %>
+        <div class="timeline">
+            <% activities.forEach(activity => { %>
+                <div class="activity-item">
+                    <div class="activity-content">
+                        <% if (activity.type === 'RATED_MOVIE') { %>
+                            <div class="activity-icon icon-rating">★</div>
+                            <div class="activity-text">
+                                <h3>Calificó una película</h3>
+                                <p>
+                                    <span class="movie-title"><%= activity.details.movieTitle %></span>
+                                </p>
+                                <div class="rating-stars">
+                                    <% for(let i = 0; i < activity.details.rating; i++) { %>★<% } %>
+                                    <% for(let i = activity.details.rating; i < 5; i++) { %>☆<% } %>
+                                </div>
+                            </div>
+                        <% } else if (activity.type === 'WROTE_REVIEW') { %>
+                            <div class="activity-icon icon-review">✍</div>
+                            <div class="activity-text">
+                                <h3>Escribió una reseña</h3>
+                                <p>
+                                    <span class="movie-title"><%= activity.details.movieTitle %></span>
+                                </p>
+                            </div>
+                        <% } else if (activity.type === 'ADDED_TO_FAVORITES') { %>
+                            <div class="activity-icon icon-favorite">♥</div>
+                            <div class="activity-text">
+                                <h3>Añadió a favoritos</h3>
+                                <p>
+                                    <span class="movie-title"><%= activity.details.movieTitle %></span>
+                                </p>
+                            </div>
+                        <% } %>
+                    </div>
+                    <div class="timestamp">
+                        <%= new Date(activity.timestamp).toLocaleString('es-ES', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        }) %>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    <% } %>
+</div>
+</body>
+</html>
