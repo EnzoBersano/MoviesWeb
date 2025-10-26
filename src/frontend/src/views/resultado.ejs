@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resultados de Búsqueda</title>
-    <link rel="stylesheet" href="/css/common.css">
-    <link rel="stylesheet" href="/css/resultado.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/resultado.css">
 </head>
 <body>
 <div class="container">
@@ -76,7 +76,7 @@
                     <% actors.forEach(actor => { %>
                         <div class="result-item">
                             <a href="/actor/<%= actor.person_id %>" class="result-link">
-                                <span class="person-icon">🎭</span>
+                                <span class="person-icon"></span>
                                 <span class="person-name"><%= actor.person_name %></span>
                             </a>
                         </div>
@@ -94,7 +94,7 @@
                     <% directors.forEach(director => { %>
                         <div class="result-item">
                             <a href="/director/<%= director.person_id %>" class="result-link">
-                                <span class="person-icon">🎬</span>
+                                <span class="person-icon"></span>
                                 <span class="person-name"><%= director.person_name %></span>
                             </a>
                         </div>
@@ -122,6 +122,6 @@
     <% } %>
 </div>
 
-<script src="/js/resultado.js"></script>
+<script src="../js/resultado.js"></script>
 </body>
 </html>

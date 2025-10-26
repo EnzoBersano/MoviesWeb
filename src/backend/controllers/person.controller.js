@@ -1,4 +1,4 @@
-const personService = require('../services/personService');
+const personService = require('../service/person.service');
 
 class PersonController {
     async getActorDetails(req, res) {

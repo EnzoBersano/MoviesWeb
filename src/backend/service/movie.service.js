@@ -1,4 +1,4 @@
-const movieRepository = require('../repositories/movieRepository');
+const movieRepository = require('../repository/movie.repository');
 
 class MovieService {
     async getMovieDetails(movieId) {

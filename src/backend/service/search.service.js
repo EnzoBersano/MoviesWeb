@@ -1,4 +1,4 @@
-const searchRepository = require('../repositories/searchRepository');
+const searchRepository = require('../repository/search.repository');
 
 class SearchService {
     async searchAll(searchTerm) {

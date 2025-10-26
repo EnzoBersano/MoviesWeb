@@ -1,4 +1,4 @@
-const searchService = require('../services/searchService');
+const searchService = require('../service/search.service');
 
 class SearchController {
     async search(req, res) {

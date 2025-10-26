@@ -1,4 +1,4 @@
-const userService = require('../services/userService');
+const userService = require('../service/user.service');
 
 class UserController {
     // Listar todos los usuarios

@@ -1,4 +1,4 @@
-const personRepository = require('../repositories/personRepository');
+const personRepository = require('../repository/person.repository');
 
 class PersonService {
     async getActorDetails(actorId) {
