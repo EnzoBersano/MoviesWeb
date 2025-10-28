@@ -3,7 +3,7 @@ const express = require('express');
 const path = require('path');
 const { connectMongo, closeMongo } = require('./config/mongo-config');
 const mainRoutes = require('./src/backend/routes/index.js'); // rutas principales del backend
-
+const profileRoutes = require('./src/backend/routes/profileRoutes'); // 👈 NUEVA LÍNEA
 
 const app = express();
 const PORT = process.env.PORT || 3500;
@@ -33,6 +33,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // --- Rutas ---
 app.use('/', mainRoutes);
+app.use('/profile', profileRoutes); // 👈 NUEVA LÍNEA
 
 // --- Manejo de errores 404 ---
 app.use((req, res) => {
@@ -44,17 +45,20 @@ async function startServer() {
     try {
         await connectMongo();
         app.listen(PORT, () => {
-            console.log(`Servidor en ejecución en http://localhost:${PORT}`);
+            console.log(`✅ Servidor en ejecución en http://localhost:${PORT}`);
+            console.log(`📊 Perfil de usuario disponible en http://localhost:${PORT}/profile/user_abc`);
         });
     } catch (error) {
-        console.error('Error al iniciar el servidor:', error);
+        console.error('❌ Error al iniciar el servidor:', error);
         process.exit(1);
     }
 }
 
 // --- Cierre limpio de conexión Mongo ---
 process.on('SIGINT', async () => {
+    console.log('\n🔄 Cerrando conexión a MongoDB...');
     await closeMongo();
+    console.log('👋 Servidor cerrado correctamente');
     process.exit(0);
 });
 
