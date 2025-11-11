@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios - MovieWeb</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .users-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .users-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .btn-new-user {
+            background-color: #2ecc71;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .btn-new-user:hover {
+            background-color: #27ae60;
+        }
+
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .user-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            margin: 0 auto 15px;
+        }
+
+        .user-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin: 10px 0 5px;
+            text-align: center;
+        }
+
+        .user-username {
+            color: #666;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .user-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+            padding: 15px 0;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .stat-label {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .btn-profile {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-edit {
+            background-color: #f39c12;
+            color: white;
+        }
+
+        .btn-delete {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        .no-users {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+<%- include('partials/header') %>
+
+<div class="users-container">
+    <div class="users-header">
+        <h1>👥 Usuarios</h1>
+        <a href="/users/new" class="btn-new-user">+ Nuevo Usuario</a>
+    </div>
+
+    <% if (users.length === 0) { %>
+        <div class="no-users">
+            <h2>No hay usuarios registrados</h2>
+            <p>Comienza creando tu primer usuario</p>
+        </div>
+    <% } else { %>
+        <div class="users-grid">
+            <% users.forEach(user => { %>
+                <div class="user-card">
+                    <div class="user-avatar">
+                        <%= user.user_name.charAt(0).toUpperCase() %>
+                    </div>
+
+                    <h2 class="user-name"><%= user.user_name %></h2>
+                    <p class="user-username">@<%= user.user_username %></p>
+
+                    <div class="user-stats">
+                        <div class="stat">
+                            <div class="stat-value"><%= user.total_movies || 0 %></div>
+                            <div class="stat-label">Películas</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value"><%= user.total_favorites || 0 %></div>
+                            <div class="stat-label">Favoritas</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">
+                                <%= user.avg_rating ? user.avg_rating : '-' %>
+                            </div>
+                            <div class="stat-label">Rating</div>
+                        </div>
+                    </div>
+
+                    <div class="user-actions">
+                        <a href="/users/<%= user.user_id %>/profile" class="btn btn-profile">
+                            Ver Perfil
+                        </a>
+                        <a href="/users/<%= user.user_id %>/edit" class="btn btn-edit">
+                            Editar
+                        </a>
+                        <form method="POST" action="/users/<%= user.user_id %>/delete"
+                              style="display: inline; flex: 1;"
+                              onsubmit="return confirm('¿Estás seguro de eliminar este usuario?')">
+                            <button type="submit" class="btn btn-delete" style="width: 100%">
+                                Eliminar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    <% } %>
+</div>
+
+<%- include('partials/footer') %>
+</body>
+</html>

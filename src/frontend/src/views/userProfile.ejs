@@ -19,8 +19,22 @@
             <p class="username">@<%= user.user_username %></p>
             <p class="email"><%= user.user_email %></p>
         </div>
+
         <div class="profile-actions">
+            <!-- Editar usuario -->
             <a href="/users/<%= user.user_id %>/edit" class="btn btn-warning">Editar Usuario</a>
+
+            <!-- Ver timeline -->
+            <a href="/activity/timeline/<%= user.user_id %>" class="btn btn-secondary" style="margin-left:8px;">
+                Ver Timeline
+            </a>
+
+            <!-- Eliminar usuario (formulario POST con confirm) -->
+            <form action="/users/<%= user.user_id %>/delete" method="POST"
+                  onsubmit="return confirm('¿Seguro que querés eliminar este usuario? Esta acción es irreversible.');"
+                  style="display:inline; margin-left:8px;">
+                <button type="submit" class="btn btn-danger">Eliminar Usuario</button>
+            </form>
         </div>
     </div>
 

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= user ? 'Editar' : 'Nuevo' %> Usuario - MovieWeb</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .form-container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-header h1 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #34495e;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .form-group .hint {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .error-message {
+            background-color: #ffe6e6;
+            color: #c0392b;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+<%- include('partials/header') %>
+
+<div class="form-container">
+    <div class="form-header">
+        <h1><%= user ? '✏️ Editar Usuario' : '➕ Nuevo Usuario' %></h1>
+        <p><%= user ? 'Modifica la información del usuario' : 'Completa el formulario para crear un usuario' %></p>
+    </div>
+
+    <% if (error) { %>
+        <div class="error-message">
+            ⚠️ <%= error %>
+        </div>
+    <% } %>
+
+    <form method="POST" action="<%= user ? `/users/${user.user_id}` : '/users' %>">
+        <div class="form-group">
+            <label for="username">
+                Nombre de usuario <span class="required">*</span>
+            </label>
+            <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    value="<%= user ? user.user_username : '' %>"
+                    required
+                    pattern="[a-zA-Z0-9_]{3,50}"
+                    minlength="3"
+                    maxlength="50"
+                    placeholder="juan_perez"
+            >
+            <div class="hint">
+                Solo letras, números y guión bajo. Mínimo 3 caracteres.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="name">
+                Nombre completo <span class="required">*</span>
+            </label>
+            <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value="<%= user ? user.user_name : '' %>"
+                    required
+                    maxlength="100"
+                    placeholder="Juan Pérez"
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="email">
+                Email <span class="required">*</span>
+            </label>
+            <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value="<%= user ? user.user_email : '' %>"
+                    required
+                    maxlength="100"
+                    placeholder="juan@example.com"
+            >
+        </div>
+
+        <% if (!user) { %>
+            <div class="form-group">
+                <label for="password">
+                    Contraseña <span class="required">*</span>
+                </label>
+                <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        required
+                        minlength="6"
+                        placeholder="••••••••"
+                >
+                <div class="hint">
+                    Mínimo 6 caracteres.
+                </div>
+            </div>
+        <% } %>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <%= user ? '💾 Guardar Cambios' : '✨ Crear Usuario' %>
+            </button>
+            <a href="/users" class="btn btn-secondary">
+                ❌ Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+
+<%- include('partials/footer') %>
+</body>
+</html>
