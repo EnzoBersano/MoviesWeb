@@ -3,109 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= user ? 'Editar' : 'Nuevo' %> Usuario - MovieWeb</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <title><%= user ? 'Editar Usuario' : 'Crear Usuario' %> - MovieWeb</title>
+    <link rel="stylesheet" href="/styles.css">
     <style>
         .form-container {
             max-width: 600px;
-            margin: 40px auto;
+            margin: 50px auto;
             padding: 30px;
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
         }
-
-        .form-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .form-header h1 {
-            margin-bottom: 10px;
-            color: #2c3e50;
-        }
-
         .form-group {
             margin-bottom: 20px;
         }
-
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
             font-weight: bold;
-            color: #34495e;
         }
-
         .form-group input {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
             font-size: 16px;
-            transition: border-color 0.3s;
         }
-
         .form-group input:focus {
             outline: none;
-            border-color: #3498db;
+            border-color: #007bff;
         }
-
-        .form-group .hint {
-            font-size: 0.85em;
-            color: #666;
-            margin-top: 5px;
-        }
-
-        .error-message {
-            background-color: #ffe6e6;
-            color: #c0392b;
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            border-left: 4px solid #e74c3c;
-        }
-
         .form-actions {
             display: flex;
-            gap: 15px;
+            gap: 10px;
             margin-top: 30px;
         }
-
         .btn {
-            flex: 1;
-            padding: 12px 24px;
+            padding: 10px 20px;
             border: none;
             border-radius: 5px;
-            font-size: 16px;
-            font-weight: bold;
             cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .btn-primary {
-            background-color: #3498db;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: #2980b9;
-        }
-
-        .btn-secondary {
-            background-color: #95a5a6;
-            color: white;
+            font-size: 16px;
             text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: inline-block;
+            text-align: center;
         }
-
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
         .btn-secondary:hover {
-            background-color: #7f8c8d;
+            background-color: #5a6268;
         }
-
-        .required {
-            color: #e74c3c;
+        .error-message {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -113,94 +73,51 @@
 <%- include('partials/header') %>
 
 <div class="form-container">
-    <div class="form-header">
-        <h1><%= user ? '✏️ Editar Usuario' : '➕ Nuevo Usuario' %></h1>
-        <p><%= user ? 'Modifica la información del usuario' : 'Completa el formulario para crear un usuario' %></p>
-    </div>
+    <h1><%= user ? 'Editar Usuario' : 'Crear Nuevo Usuario' %></h1>
 
-    <% if (error) { %>
-        <div class="error-message">
-            ⚠️ <%= error %>
-        </div>
-    <% } %>
-
-    <form method="POST" action="<%= user ? `/users/${user.user_id}` : '/users' %>">
+    <form method="POST" action="<%= action %>">
         <div class="form-group">
-            <label for="username">
-                Nombre de usuario <span class="required">*</span>
-            </label>
+            <label for="user_username">Username *</label>
             <input
                     type="text"
-                    id="username"
-                    name="username"
+                    id="user_username"
+                    name="user_username"
                     value="<%= user ? user.user_username : '' %>"
                     required
                     pattern="[a-zA-Z0-9_]{3,50}"
-                    minlength="3"
-                    maxlength="50"
-                    placeholder="juan_perez"
+                    title="El username debe tener entre 3 y 50 caracteres (solo letras, números y guiones bajos)"
             >
-            <div class="hint">
-                Solo letras, números y guión bajo. Mínimo 3 caracteres.
-            </div>
         </div>
 
         <div class="form-group">
-            <label for="name">
-                Nombre completo <span class="required">*</span>
-            </label>
+            <label for="user_name">Nombre Completo *</label>
             <input
                     type="text"
-                    id="name"
-                    name="name"
+                    id="user_name"
+                    name="user_name"
                     value="<%= user ? user.user_name : '' %>"
                     required
                     maxlength="100"
-                    placeholder="Juan Pérez"
             >
         </div>
 
         <div class="form-group">
-            <label for="email">
-                Email <span class="required">*</span>
-            </label>
+            <label for="user_email">Email *</label>
             <input
                     type="email"
-                    id="email"
-                    name="email"
+                    id="user_email"
+                    name="user_email"
                     value="<%= user ? user.user_email : '' %>"
                     required
                     maxlength="100"
-                    placeholder="juan@example.com"
             >
         </div>
 
-        <% if (!user) { %>
-            <div class="form-group">
-                <label for="password">
-                    Contraseña <span class="required">*</span>
-                </label>
-                <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        required
-                        minlength="6"
-                        placeholder="••••••••"
-                >
-                <div class="hint">
-                    Mínimo 6 caracteres.
-                </div>
-            </div>
-        <% } %>
-
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">
-                <%= user ? '💾 Guardar Cambios' : '✨ Crear Usuario' %>
+                <%= user ? 'Actualizar' : 'Crear' %> Usuario
             </button>
-            <a href="/users" class="btn btn-secondary">
-                ❌ Cancelar
-            </a>
+            <a href="/users" class="btn btn-secondary">Cancelar</a>
         </div>
     </form>
 </div>
