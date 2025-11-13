@@ -46,7 +46,8 @@ async function startServer() {
         await connectMongo();
         app.listen(PORT, () => {
             console.log(`✅ Servidor en ejecución en http://localhost:${PORT}`);
-            console.log(`📊 Perfil de usuario disponible en http://localhost:${PORT}/profile/user_abc`);
+            console.log(`🔍 Buscador principal disponible en http://localhost:${PORT}/`);
+            console.log(`📊 Timeline integrado en el buscador principal`);
         });
     } catch (error) {
         console.error('❌ Error al iniciar el servidor:', error);
