@@ -1,9 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
-const { connectMongo, closeMongo } = require('./config/mongo-config');
-const mainRoutes = require('./src/backend/routes/index.js'); // rutas principales del backend
-const profileRoutes = require('./src/backend/routes/profileRoutes'); // 👈 NUEVA LÍNEA
+const mongoDB = require('./src/backend/config/mongodb');
+const mainRoutes = require('./src/backend/routes/index.js');
 
 const app = express();
 const PORT = process.env.PORT || 3500;
@@ -33,7 +32,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // --- Rutas ---
 app.use('/', mainRoutes);
-app.use('/profile', profileRoutes); // 👈 NUEVA LÍNEA
 
 // --- Manejo de errores 404 ---
 app.use((req, res) => {
@@ -43,23 +41,26 @@ app.use((req, res) => {
 // --- Inicialización del servidor ---
 async function startServer() {
     try {
-        await connectMongo();
+        // Conectar a MongoDB nativo
+        await mongoDB.connect();
+
         app.listen(PORT, () => {
-            console.log(`✅ Servidor en ejecución en http://localhost:${PORT}`);
-            console.log(`🔍 Buscador principal disponible en http://localhost:${PORT}/`);
-            console.log(`📊 Timeline integrado en el buscador principal`);
+            console.log(` Servidor en ejecución en http://localhost:${PORT}`);
+            console.log(` Buscador principal disponible en http://localhost:${PORT}/`);
+            console.log(` Timeline integrado en el buscador principal`);
+            console.log(`  Usando MongoDB nativo (sin Mongoose)`);
         });
     } catch (error) {
-        console.error('❌ Error al iniciar el servidor:', error);
+        console.error(' Error al iniciar el servidor:', error);
         process.exit(1);
     }
 }
 
 // --- Cierre limpio de conexión Mongo ---
 process.on('SIGINT', async () => {
-    console.log('\n🔄 Cerrando conexión a MongoDB...');
-    await closeMongo();
-    console.log('👋 Servidor cerrado correctamente');
+    console.log('\n Cerrando conexión a MongoDB...');
+    await mongoDB.disconnect();
+    console.log(' Servidor cerrado correctamente');
     process.exit(0);
 });
 

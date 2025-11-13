@@ -1,170 +1,163 @@
-// services/activityService.js
-const { getDb } = require('./../../../config/mongo-config');
+const activityRepository = require('../repository/activity.repository');
 
-const COLLECTION_NAME = 'user_activity';
+class ActivityService {
 
-// Tipos de actividad
-const ActivityTypes = {
-    RATED_MOVIE: 'RATED_MOVIE',
-    WROTE_REVIEW: 'WROTE_REVIEW',
-    ADDED_TO_FAVORITES: 'ADDED_TO_FAVORITES'
-};
+    static async logRating(userId, movieId, movieTitle, rating) {
+        try {
+            const activityData = {
+                userId: userId.toString(),
+                type: 'RATED_MOVIE',
+                timestamp: new Date(),
+                details: {
+                    movieId: parseInt(movieId),
+                    movieTitle,
+                    rating: parseInt(rating)
+                }
+            };
 
-/**
- * Registra una calificación de película
- */
-async function logRating(userId, movieId, movieTitle, rating) {
-    const db = getDb();
-    const activity = {
-        userId: userId.toString(),
-        type: ActivityTypes.RATED_MOVIE,
-        timestamp: new Date(),
-        details: {
-            movieId: parseInt(movieId),
-            movieTitle,
-            rating: parseInt(rating)
+            const activity = await activityRepository.create(activityData);
+            console.log(`Usuario ${userId} califico "${movieTitle}" con ${rating} estrellas`);
+            return activity;
+        } catch (error) {
+            console.error('Error al registrar calificacion:', error);
+            throw error;
         }
-    };
+    }
 
-    const result = await db.collection(COLLECTION_NAME).insertOne(activity);
-    return result;
-}
+    static async logReview(userId, movieId, movieTitle, reviewId, reviewText) {
+        try {
+            const activityData = {
+                userId: userId.toString(),
+                type: 'WROTE_REVIEW',
+                timestamp: new Date(),
+                details: {
+                    movieId: parseInt(movieId),
+                    movieTitle,
+                    reviewId: reviewId.toString(),
+                    reviewText: reviewText ? reviewText.substring(0, 200) : ''
+                }
+            };
 
-/**
- * Registra que se escribió una reseña
- */
-async function logReview(userId, movieId, movieTitle, reviewId) {
-    const db = getDb();
-    const activity = {
-        userId: userId.toString(),
-        type: ActivityTypes.WROTE_REVIEW,
-        timestamp: new Date(),
-        details: {
-            movieId: parseInt(movieId),
-            movieTitle,
-            reviewId: reviewId.toString()
+            const activity = await activityRepository.create(activityData);
+            console.log(`Usuario ${userId} escribio reseña para "${movieTitle}"`);
+            return activity;
+        } catch (error) {
+            console.error('Error al registrar reseña:', error);
+            throw error;
         }
-    };
+    }
 
-    const result = await db.collection(COLLECTION_NAME).insertOne(activity);
-    return result;
-}
+    static async logFavorite(userId, movieId, movieTitle) {
+        try {
+            const activityData = {
+                userId: userId.toString(),
+                type: 'ADDED_TO_FAVORITES',
+                timestamp: new Date(),
+                details: {
+                    movieId: parseInt(movieId),
+                    movieTitle
+                }
+            };
 
-/**
- * Registra que se añadió una película a favoritos
- */
-async function logFavorite(userId, movieId, movieTitle) {
-    const db = getDb();
-    const activity = {
-        userId: userId.toString(),
-        type: ActivityTypes.ADDED_TO_FAVORITES,
-        timestamp: new Date(),
-        details: {
-            movieId: parseInt(movieId),
-            movieTitle
+            const activity = await activityRepository.create(activityData);
+            console.log(`Usuario ${userId} añadio "${movieTitle}" a favoritos`);
+            return activity;
+        } catch (error) {
+            console.error('Error al registrar favorito:', error);
+            throw error;
         }
-    };
+    }
 
-    const result = await db.collection(COLLECTION_NAME).insertOne(activity);
-    return result;
-}
-
-/**
- * Obtiene el timeline de actividad de un usuario
- */
-async function getUserTimeline(userId, limit = 20) {
-    const db = getDb();
-    const activities = await db.collection(COLLECTION_NAME)
-        .find({ userId: userId.toString() })
-        .sort({ timestamp: -1 })
-        .limit(limit)
-        .toArray();
-
-    return activities;
-}
-
-/**
- * Obtiene todas las actividades recientes (feed público)
- */
-async function getRecentActivities(limit = 50) {
-    const db = getDb();
-    const activities = await db.collection(COLLECTION_NAME)
-        .find({})
-        .sort({ timestamp: -1 })
-        .limit(limit)
-        .toArray();
-
-    return activities;
-}
-
-/**
- * Elimina una actividad específica
- */
-async function deleteActivity(activityId) {
-    const db = getDb();
-    const { ObjectId } = require('mongodb');
-
-    const result = await db.collection(COLLECTION_NAME).deleteOne({
-        _id: new ObjectId(activityId)
-    });
-
-    return result;
-}
-
-/**
- * Elimina todas las actividades de un usuario
- */
-async function deleteUserActivities(userId) {
-    const db = getDb();
-    const result = await db.collection(COLLECTION_NAME).deleteMany({
-        userId: userId.toString()
-    });
-
-    return result;
-}
-
-/**
- * Obtiene estadísticas de actividad de un usuario
- */
-async function getUserStats(userId) {
-    const db = getDb();
-
-    const stats = await db.collection(COLLECTION_NAME).aggregate([
-        { $match: { userId: userId.toString() } },
-        {
-            $group: {
-                _id: '$type',
-                count: { $sum: 1 }
-            }
+    static async getUserTimeline(userId, limit = 20) {
+        try {
+            const activities = await activityRepository.findByUserId(userId, {
+                limit: limit,
+                sort: { timestamp: -1 }
+            });
+            return activities;
+        } catch (error) {
+            console.error('Error al obtener timeline:', error);
+            throw error;
         }
-    ]).toArray();
+    }
 
-    // Convertir a objeto más legible
-    const statsObj = {
-        totalActivities: 0,
-        ratings: 0,
-        reviews: 0,
-        favorites: 0
-    };
+    static async getUserStats(userId) {
+        try {
+            const aggregationResults = await activityRepository.getUserStats(userId);
 
-    stats.forEach(stat => {
-        statsObj.totalActivities += stat.count;
-        if (stat._id === ActivityTypes.RATED_MOVIE) statsObj.ratings = stat.count;
-        if (stat._id === ActivityTypes.WROTE_REVIEW) statsObj.reviews = stat.count;
-        if (stat._id === ActivityTypes.ADDED_TO_FAVORITES) statsObj.favorites = stat.count;
-    });
+            const statsObj = {
+                totalRatings: 0,
+                totalReviews: 0,
+                totalFavorites: 0,
+                totalActivities: 0
+            };
 
-    return statsObj;
+            aggregationResults.forEach(stat => {
+                if (stat._id === 'RATED_MOVIE') statsObj.totalRatings = stat.count;
+                if (stat._id === 'WROTE_REVIEW') statsObj.totalReviews = stat.count;
+                if (stat._id === 'ADDED_TO_FAVORITES') statsObj.totalFavorites = stat.count;
+                statsObj.totalActivities += stat.count;
+            });
+
+            return statsObj;
+        } catch (error) {
+            console.error('Error al obtener estadisticas:', error);
+            throw error;
+        }
+    }
+
+    static async deleteActivity(activityId) {
+        try {
+            const result = await activityRepository.deleteById(activityId);
+            return result;
+        } catch (error) {
+            console.error('Error al eliminar actividad:', error);
+            throw error;
+        }
+    }
+
+    static async deleteUserActivities(userId) {
+        try {
+            const result = await activityRepository.deleteByUserId(userId);
+            return result;
+        } catch (error) {
+            console.error('Error al eliminar actividades del usuario:', error);
+            throw error;
+        }
+    }
+
+    static async getActivityById(activityId) {
+        try {
+            const activity = await activityRepository.findById(activityId);
+            return activity;
+        } catch (error) {
+            console.error('Error al obtener actividad:', error);
+            throw error;
+        }
+    }
+
+    static async getActivitiesByType(userId, type, limit = 20) {
+        try {
+            const activities = await activityRepository.findByType(userId, type, {
+                limit: limit,
+                sort: { timestamp: -1 }
+            });
+            return activities;
+        } catch (error) {
+            console.error('Error al obtener actividades por tipo:', error);
+            throw error;
+        }
+    }
+
+    static async countUserActivities(userId) {
+        try {
+            const count = await activityRepository.countByUserId(userId);
+            return count;
+        } catch (error) {
+            console.error('Error al contar actividades:', error);
+            throw error;
+        }
+    }
 }
 
-module.exports = {
-    ActivityTypes,
-    logRating,
-    logReview,
-    logFavorite,
-    getUserTimeline,
-    getRecentActivities,
-    deleteActivity,
-    deleteUserActivities,
-    getUserStats
-};
+module.exports = ActivityService;
