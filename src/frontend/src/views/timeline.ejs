@@ -3,28 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
-    <link rel="stylesheet" href="/css/timeline.css">
+    <title><%= title %> - MovieWeb</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            transition: background 0.3s;
+        }
+
+        .back-button:hover {
+            background: #5568d3;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.2rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-card h3 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .stat-card p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .timeline {
+            margin-top: 40px;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 20px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .activity-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .activity-icon {
+            font-size: 3rem;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .icon-rating {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .icon-review {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .icon-favorite {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .activity-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .activity-text h3 {
+            color: #333;
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+
+        .activity-text p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .movie-title {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .rating-stars {
+            color: #ffd700;
+            font-size: 1.5rem;
+            margin-top: 5px;
+        }
+
+        .timestamp {
+            color: #999;
+            font-size: 0.9rem;
+            text-align: right;
+            margin-top: auto;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #666;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            color: #999;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
-    <a href="/" class="back-button">Volver al inicio</a>
+    <a href="/users/<%= userId %>" class="back-button">← Volver al perfil</a>
 
     <div class="header">
-        <h1>Timeline de Actividad</h1>
-        <p>Usuario: <%= userId %></p>
+        <h1>📅 Timeline de Actividad</h1>
+        <p>Usuario: <strong><%= userId %></strong></p>
 
         <div class="stats">
             <div class="stat-card">
-                <h3><%= stats.ratings %></h3>
+                <h3><%= stats.totalRatings %></h3>
                 <p>Calificaciones</p>
             </div>
             <div class="stat-card">
-                <h3><%= stats.reviews %></h3>
+                <h3><%= stats.totalReviews %></h3>
                 <p>Reseñas</p>
             </div>
             <div class="stat-card">
-                <h3><%= stats.favorites %></h3>
+                <h3><%= stats.totalFavorites %></h3>
                 <p>Favoritos</p>
             </div>
             <div class="stat-card">
@@ -36,16 +211,17 @@
 
     <% if (activities.length === 0) { %>
         <div class="empty-state">
-            <h2>Sin actividad reciente</h2>
+            <h2>📭 Sin actividad reciente</h2>
             <p>Aún no hay actividades registradas para este usuario.</p>
+            <p style="margin-top: 20px;">¡Comienza a calificar, reseñar y agregar favoritos!</p>
         </div>
     <% } else { %>
         <div class="timeline">
             <% activities.forEach(activity => { %>
                 <div class="activity-item">
-                    <div class="activity-content">
-                        <% if (activity.type === 'RATED_MOVIE') { %>
-                            <div class="activity-icon icon-rating">★</div>
+                    <% if (activity.type === 'RATED_MOVIE') { %>
+                        <div class="activity-icon icon-rating">⭐</div>
+                        <div class="activity-content">
                             <div class="activity-text">
                                 <h3>Calificó una película</h3>
                                 <p>
@@ -56,33 +232,55 @@
                                     <% for(let i = activity.details.rating; i < 5; i++) { %>☆<% } %>
                                 </div>
                             </div>
-                        <% } else if (activity.type === 'WROTE_REVIEW') { %>
-                            <div class="activity-icon icon-review">✍</div>
+                            <div class="timestamp">
+                                <%= new Date(activity.timestamp).toLocaleString('es-ES', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                }) %>
+                            </div>
+                        </div>
+                    <% } else if (activity.type === 'WROTE_REVIEW') { %>
+                        <div class="activity-icon icon-review">✍️</div>
+                        <div class="activity-content">
                             <div class="activity-text">
                                 <h3>Escribió una reseña</h3>
                                 <p>
                                     <span class="movie-title"><%= activity.details.movieTitle %></span>
                                 </p>
                             </div>
-                        <% } else if (activity.type === 'ADDED_TO_FAVORITES') { %>
-                            <div class="activity-icon icon-favorite">♥</div>
+                            <div class="timestamp">
+                                <%= new Date(activity.timestamp).toLocaleString('es-ES', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                }) %>
+                            </div>
+                        </div>
+                    <% } else if (activity.type === 'ADDED_TO_FAVORITES') { %>
+                        <div class="activity-icon icon-favorite">❤️</div>
+                        <div class="activity-content">
                             <div class="activity-text">
                                 <h3>Añadió a favoritos</h3>
                                 <p>
                                     <span class="movie-title"><%= activity.details.movieTitle %></span>
                                 </p>
                             </div>
-                        <% } %>
-                    </div>
-                    <div class="timestamp">
-                        <%= new Date(activity.timestamp).toLocaleString('es-ES', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        }) %>
-                    </div>
+                            <div class="timestamp">
+                                <%= new Date(activity.timestamp).toLocaleString('es-ES', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                }) %>
+                            </div>
+                        </div>
+                    <% } %>
                 </div>
             <% }); %>
         </div>
