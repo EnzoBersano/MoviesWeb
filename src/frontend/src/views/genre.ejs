@@ -1,0 +1,250 @@
+<!-- src/frontend/src/views/genre.ejs - NUEVA VISTA -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= genre.genre_name %> - MovieWeb</title>
+    <link rel="stylesheet" href="/css/theme-cyberpunk.css">
+    <style>
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 40px 20px;
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            border: 2px solid var(--neon-purple);
+        }
+
+        .page-title {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px var(--neon-pink);
+        }
+
+        .results-count {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            padding: 12px 24px;
+            background: var(--bg-card);
+            border: 2px solid var(--neon-blue);
+            border-radius: 30px;
+            color: var(--neon-blue);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .back-link:hover {
+            background: var(--neon-blue);
+            color: var(--bg-dark);
+            box-shadow: var(--shadow-blue);
+        }
+
+        /* Paginación */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 50px 0;
+            flex-wrap: wrap;
+        }
+
+        .pagination-btn {
+            padding: 12px 20px;
+            background: var(--bg-card);
+            border: 2px solid var(--neon-purple);
+            border-radius: 8px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .pagination-btn:hover:not(.disabled) {
+            background: var(--neon-purple);
+            box-shadow: var(--shadow-purple);
+            transform: translateY(-2px);
+        }
+
+        .pagination-btn.active {
+            background: linear-gradient(45deg, var(--neon-pink), var(--neon-purple));
+            border-color: var(--neon-pink);
+            box-shadow: var(--shadow-pink);
+        }
+
+        .pagination-btn.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            border-color: var(--text-muted);
+        }
+
+        .pagination-info {
+            padding: 12px 24px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 100px 20px;
+            color: var(--text-muted);
+            font-size: 1.3rem;
+        }
+    </style>
+</head>
+<body>
+<button id="theme-toggle" class="theme-toggle">
+    <span id="theme-icon">🌙</span> Tema
+</button>
+
+<div class="container">
+    <a href="/" class="back-link">← Volver al inicio</a>
+
+    <div class="page-header">
+        <h1 class="page-title"><%= genre.genre_name %></h1>
+        <p class="results-count">
+            <%= pagination.totalMovies %> películas encontradas
+        </p>
+    </div>
+
+    <% if (movies && movies.length > 0) { %>
+        <div class="movies-grid">
+            <% movies.forEach(movie => { %>
+                <a href="/pelicula/<%= movie.movie_id %>" style="text-decoration: none;">
+                    <div class="movie-card">
+                        <img
+                                src="<%= movie.poster_url %>"
+                                alt="<%= movie.title %>"
+                                loading="lazy"
+                        >
+                        <div class="movie-card-info">
+                            <div class="movie-card-title"><%= movie.title %></div>
+                            <% if (movie.release_date) { %>
+                                <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
+                                    <%= new Date(movie.release_date).getFullYear() %>
+                                </div>
+                            <% } %>
+                            <% if (movie.vote_average) { %>
+                                <div class="movie-card-rating">
+                                    ⭐ <%= movie.vote_average.toFixed(1) %>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </a>
+            <% }); %>
+        </div>
+
+        <!-- Paginación -->
+        <div class="pagination">
+            <!-- Primera página -->
+            <% if (pagination.currentPage > 1) { %>
+                <a href="/genre/<%= genre.genre_id %>?page=1" class="pagination-btn">
+                    ««
+                </a>
+            <% } else { %>
+                <span class="pagination-btn disabled">««</span>
+            <% } %>
+
+            <!-- Página anterior -->
+            <% if (pagination.hasPrevPage) { %>
+                <a href="/genre/<%= genre.genre_id %>?page=<%= pagination.currentPage - 1 %>" class="pagination-btn">
+                    ‹ Anterior
+                </a>
+            <% } else { %>
+                <span class="pagination-btn disabled">‹ Anterior</span>
+            <% } %>
+
+            <!-- Info de página -->
+            <span class="pagination-info">
+                    Página <%= pagination.currentPage %> de <%= pagination.totalPages %>
+                </span>
+
+            <!-- Página siguiente -->
+            <% if (pagination.hasNextPage) { %>
+                <a href="/genre/<%= genre.genre_id %>?page=<%= pagination.currentPage + 1 %>" class="pagination-btn">
+                    Siguiente ›
+                </a>
+            <% } else { %>
+                <span class="pagination-btn disabled">Siguiente ›</span>
+            <% } %>
+
+            <!-- Última página -->
+            <% if (pagination.currentPage < pagination.totalPages) { %>
+                <a href="/genre/<%= genre.genre_id %>?page=<%= pagination.totalPages %>" class="pagination-btn">
+                    »»
+                </a>
+            <% } else { %>
+                <span class="pagination-btn disabled">»»</span>
+            <% } %>
+        </div>
+
+        <!-- Páginas numeradas (max 7) -->
+        <div class="pagination">
+            <%
+                const maxPages = 7;
+                let startPage = Math.max(1, pagination.currentPage - Math.floor(maxPages / 2));
+                let endPage = Math.min(pagination.totalPages, startPage + maxPages - 1);
+
+                if (endPage - startPage < maxPages - 1) {
+                    startPage = Math.max(1, endPage - maxPages + 1);
+                }
+            %>
+
+            <% for (let i = startPage; i <= endPage; i++) { %>
+                <% if (i === pagination.currentPage) { %>
+                    <span class="pagination-btn active"><%= i %></span>
+                <% } else { %>
+                    <a href="/genre/<%= genre.genre_id %>?page=<%= i %>" class="pagination-btn">
+                        <%= i %>
+                    </a>
+                <% } %>
+            <% } %>
+        </div>
+    <% } else { %>
+        <div class="no-results">
+            <p>No se encontraron películas en este género.</p>
+        </div>
+    <% } %>
+</div>
+
+<script>
+    // Toggle de tema
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-theme');
+        themeIcon.textContent = '☀️';
+    }
+
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('light-theme');
+        const isLight = document.body.classList.contains('light-theme');
+        themeIcon.textContent = isLight ? '☀️' : '🌙';
+        localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    });
+
+    // Scroll suave al cambiar de página
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+</script>
+</body>
+</html>

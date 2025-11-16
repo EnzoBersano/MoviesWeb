@@ -1,3 +1,5 @@
+// src/backend/routes/index.js - ACTUALIZAR ARCHIVO EXISTENTE
+// Agregar rutas nuevas
 const express = require('express');
 const router = express.Router();
 
@@ -7,18 +9,35 @@ const personController = require('../controllers/person.controller');
 const userController = require('../controllers/user.controller');
 const activityController = require('../controllers/activity.controller');
 const reviewController = require('../controllers/review.controller');
+const genreController = require('../controllers/genre.controller'); // NUEVO
 
 // ============================================
-// RUTA PRINCIPAL
+// RUTA PRINCIPAL CON GÉNEROS
 // ============================================
-router.get('/', (req, res) => {
-    res.render('index');
+const genreService = require('../service/genre.service');
+
+router.get('/', async (req, res) => {
+    try {
+        const genresWithMovies = await genreService.getGenresWithPopularMovies();
+        res.render('index', { genres: genresWithMovies });
+    } catch (error) {
+        console.error('Error cargando página principal:', error);
+        res.render('index', { genres: [] });
+    }
 });
 
 // ============================================
 // RUTAS DE BÚSQUEDA
 // ============================================
 router.get('/buscar', searchController.search.bind(searchController));
+router.get('/search/movies', searchController.searchMovies.bind(searchController));
+router.get('/search/actors', searchController.searchActors.bind(searchController));
+router.get('/search/directors', searchController.searchDirectors.bind(searchController));
+
+// ============================================
+// RUTAS DE GÉNEROS
+// ============================================
+router.get('/genre/:id', genreController.getGenrePage.bind(genreController));
 
 // ============================================
 // RUTAS DE PELÍCULAS
@@ -50,6 +69,7 @@ router.post('/users/:userId/movies/:movieId/remove', userController.removeMovieF
 // ============================================
 router.get('/activity/timeline/:userId', activityController.viewTimeline.bind(activityController));
 router.get('/activity/feed', activityController.viewActivityFeed.bind(activityController));
+router.get('/profile/:userId', activityController.viewTimeline.bind(activityController));
 
 // ============================================
 // RUTAS DE ACTIVIDAD - API (JSON)

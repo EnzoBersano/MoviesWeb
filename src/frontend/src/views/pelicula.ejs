@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <link rel="stylesheet" href="/css/theme-cyberpunk.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= movie.title %> - MovieWeb</title>
@@ -8,6 +9,9 @@
     <link rel="stylesheet" href="../css/movie.css">
 </head>
 <body>
+<button id="theme-toggle" class="theme-toggle">
+    <span id="theme-icon">🌙</span> Tema
+</button>
 <div class="container">
     <div class="home-link">
         <a href="/">← Volver al inicio</a>
@@ -207,321 +211,21 @@
         <% } %>
     </div>
 </div>
-<!-- Agregar esta sección antes del cierre del body en tu pelicula.ejs existente -->
-
-<style>
-    .user-interaction-section {
-        background: white;
-        padding: 30px;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        margin-top: 30px;
-    }
-    .interaction-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-    .user-select {
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        font-size: 16px;
-    }
-    .interaction-tabs {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 20px;
-        border-bottom: 2px solid #eee;
-    }
-    .tab-btn {
-        padding: 10px 20px;
-        border: none;
-        background: none;
-        cursor: pointer;
-        font-size: 16px;
-        border-bottom: 3px solid transparent;
-        transition: all 0.3s;
-    }
-    .tab-btn.active {
-        border-bottom-color: #007bff;
-        color: #007bff;
-    }
-    .tab-content {
-        display: none;
-    }
-    .tab-content.active {
-        display: block;
-    }
-    .rating-section {
-        text-align: center;
-        padding: 20px;
-    }
-    .star-rating {
-        font-size: 40px;
-        cursor: pointer;
-        display: inline-block;
-    }
-    .star {
-        color: #ddd;
-        transition: color 0.2s;
-    }
-    .star.active,
-    .star:hover {
-        color: #ffc107;
-    }
-    .review-section textarea {
-        width: 100%;
-        min-height: 150px;
-        padding: 15px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        font-size: 16px;
-        resize: vertical;
-    }
-    .favorite-section {
-        text-align: center;
-        padding: 40px;
-    }
-    .favorite-btn {
-        font-size: 60px;
-        cursor: pointer;
-        transition: transform 0.3s;
-        display: inline-block;
-    }
-    .favorite-btn:hover {
-        transform: scale(1.2);
-    }
-    .submit-btn {
-        padding: 12px 30px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        font-size: 16px;
-        cursor: pointer;
-        margin-top: 15px;
-    }
-    .submit-btn:hover {
-        background-color: #0056b3;
-    }
-    .reviews-list {
-        margin-top: 30px;
-    }
-    .review-item {
-        background: #f8f9fa;
-        padding: 20px;
-        border-radius: 8px;
-        margin-bottom: 15px;
-    }
-    .review-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-    }
-    .review-author {
-        font-weight: bold;
-        color: #007bff;
-    }
-    .review-date {
-        font-size: 12px;
-        color: #999;
-    }
-    .review-text {
-        color: #333;
-        line-height: 1.6;
-    }
-</style>
-
-<!-- Sección de Interacción del Usuario -->
-<div class="user-interaction-section">
-    <div class="interaction-header">
-        <h2>¿Qué te pareció esta película?</h2>
-        <select id="userSelect" class="user-select" onchange="updateUserSelection()">
-            <option value="">Selecciona un usuario</option>
-            <!-- Aquí debes pasar la lista de usuarios desde el backend -->
-            <% if (typeof users !== 'undefined') { %>
-                <% users.forEach(user => { %>
-                    <option value="<%= user.user_id %>"><%= user.user_name %> (@<%= user.user_username %>)</option>
-                <% }) %>
-            <% } %>
-        </select>
-    </div>
-
-    <div id="userActionsContainer" style="display: none;">
-        <div class="interaction-tabs">
-            <button class="tab-btn active" onclick="showTab('rating')">⭐ Calificar</button>
-            <button class="tab-btn" onclick="showTab('review')">📝 Reseña</button>
-            <button class="tab-btn" onclick="showTab('favorite')">❤️ Favorito</button>
-        </div>
-
-        <!-- Tab: Calificar -->
-        <div id="rating-tab" class="tab-content active">
-            <div class="rating-section">
-                <h3>¿Cuántas estrellas le das?</h3>
-                <form method="POST" action="/movies/<%= movie.movie_id %>/rate">
-                    <input type="hidden" name="userId" id="ratingUserId">
-                    <input type="hidden" name="rating" id="ratingValue" value="0">
-
-                    <div class="star-rating" id="starRating">
-                        <span class="star" data-value="1">⭐</span>
-                        <span class="star" data-value="2">⭐</span>
-                        <span class="star" data-value="3">⭐</span>
-                        <span class="star" data-value="4">⭐</span>
-                        <span class="star" data-value="5">⭐</span>
-                    </div>
-
-                    <button type="submit" class="submit-btn" id="ratingSubmit" disabled>
-                        Enviar Calificación
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Tab: Reseña -->
-        <div id="review-tab" class="tab-content">
-            <div class="review-section">
-                <h3>Escribe tu reseña</h3>
-                <form method="POST" action="/movies/<%= movie.movie_id %>/review">
-                    <input type="hidden" name="userId" id="reviewUserId">
-                    <textarea
-                            name="review"
-                            placeholder="¿Qué te pareció esta película? Comparte tu opinión..."
-                            required
-                    ></textarea>
-                    <button type="submit" class="submit-btn">Publicar Reseña</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Tab: Favorito -->
-        <div id="favorite-tab" class="tab-content">
-            <div class="favorite-section">
-                <h3>Agregar a Favoritos</h3>
-                <form method="POST" action="/movies/<%= movie.movie_id %>/favorite">
-                    <input type="hidden" name="userId" id="favoriteUserId">
-                    <button type="submit" class="favorite-btn" title="Agregar a favoritos">
-                        ❤️
-                    </button>
-                    <p style="margin-top: 20px; color: #666;">
-                        Haz clic en el corazón para agregar/quitar de favoritos
-                    </p>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Sección de Reseñas (mostrar todas las reseñas existentes) -->
-<% if (typeof reviews !== 'undefined' && reviews.length > 0) { %>
-    <div class="user-interaction-section">
-        <h2>Reseñas de Usuarios</h2>
-        <div class="reviews-list">
-            <% reviews.forEach(review => { %>
-                <div class="review-item">
-                    <div class="review-header">
-                        <div>
-                            <span class="review-author"><%= review.user_name %></span>
-                            <% if (review.rating) { %>
-                                <span style="color: #ffc107; margin-left: 10px;">
-                                <%= '⭐'.repeat(review.rating) %>
-                            </span>
-                            <% } %>
-                        </div>
-                        <span class="review-date">
-                        <%= new Date(review.created_at).toLocaleDateString('es-ES', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                        }) %>
-                    </span>
-                    </div>
-                    <% if (review.review) { %>
-                        <div class="review-text">
-                            <%= review.review %>
-                        </div>
-                    <% } %>
-                </div>
-            <% }) %>
-        </div>
-    </div>
-<% } %>
-
 <script>
-    // Manejo de selección de usuario
-    function updateUserSelection() {
-        const userId = document.getElementById('userSelect').value;
-        const container = document.getElementById('userActionsContainer');
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const savedTheme = localStorage.getItem('theme') || 'dark';
 
-        if (userId) {
-            container.style.display = 'block';
-            document.getElementById('ratingUserId').value = userId;
-            document.getElementById('reviewUserId').value = userId;
-            document.getElementById('favoriteUserId').value = userId;
-        } else {
-            container.style.display = 'none';
-        }
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-theme');
+        themeIcon.textContent = '☀️';
     }
 
-    // Manejo de tabs
-    function showTab(tabName) {
-        // Hide all tabs
-        document.querySelectorAll('.tab-content').forEach(tab => {
-            tab.classList.remove('active');
-        });
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-
-        // Show selected tab
-        document.getElementById(tabName + '-tab').classList.add('active');
-        event.target.classList.add('active');
-    }
-
-    // Manejo de calificación con estrellas
-    const stars = document.querySelectorAll('.star');
-    const ratingValue = document.getElementById('ratingValue');
-    const ratingSubmit = document.getElementById('ratingSubmit');
-
-    stars.forEach(star => {
-        star.addEventListener('click', function() {
-            const value = this.getAttribute('data-value');
-            ratingValue.value = value;
-            ratingSubmit.disabled = false;
-
-            // Update visual feedback
-            stars.forEach((s, index) => {
-                if (index < value) {
-                    s.classList.add('active');
-                } else {
-                    s.classList.remove('active');
-                }
-            });
-        });
-
-        star.addEventListener('mouseenter', function() {
-            const value = this.getAttribute('data-value');
-            stars.forEach((s, index) => {
-                if (index < value) {
-                    s.classList.add('active');
-                } else {
-                    s.classList.remove('active');
-                }
-            });
-        });
-    });
-
-    document.getElementById('starRating').addEventListener('mouseleave', function() {
-        const currentValue = ratingValue.value;
-        stars.forEach((s, index) => {
-            if (index < currentValue) {
-                s.classList.add('active');
-            } else {
-                s.classList.remove('active');
-            }
-        });
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('light-theme');
+        const isLight = document.body.classList.contains('light-theme');
+        themeIcon.textContent = isLight ? '☀️' : '🌙';
+        localStorage.setItem('theme', isLight ? 'light' : 'dark');
     });
 </script>
 </body>

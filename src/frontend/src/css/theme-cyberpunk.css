@@ -1,0 +1,333 @@
+/* src/frontend/src/css/theme-cyberpunk.css - NUEVA CLASE */
+/* Tema Neon Cyberpunk para MovieWeb */
+
+:root {
+    /* Colores Neon Cyberpunk */
+    --neon-pink: #ff006e;
+    --neon-blue: #00f5ff;
+    --neon-purple: #bf00ff;
+    --neon-green: #00ff41;
+    --neon-yellow: #ffea00;
+
+    /* Fondos */
+    --bg-dark: #0a0e27;
+    --bg-darker: #050819;
+    --bg-card: #131935;
+    --bg-card-hover: #1a2142;
+
+    /* Textos */
+    --text-primary: #e0e0ff;
+    --text-secondary: #a8b2d1;
+    --text-muted: #717c9e;
+
+    /* Sombras Neon */
+    --shadow-pink: 0 0 20px rgba(255, 0, 110, 0.5);
+    --shadow-blue: 0 0 20px rgba(0, 245, 255, 0.5);
+    --shadow-purple: 0 0 20px rgba(191, 0, 255, 0.5);
+
+    /* Tema claro (por defecto oscuro) */
+    --primary-color: var(--neon-blue);
+    --secondary-color: var(--neon-pink);
+    --background: var(--bg-dark);
+    --card-background: var(--bg-card);
+    --border-color: var(--neon-purple);
+    --border-radius: 12px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Tema Claro */
+body.light-theme {
+    --bg-dark: #f0f4ff;
+    --bg-darker: #e8ecf7;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f5f7ff;
+    --text-primary: #1a1a2e;
+    --text-secondary: #4a5568;
+    --text-muted: #718096;
+    --neon-pink: #e91e63;
+    --neon-blue: #2196f3;
+    --neon-purple: #9c27b0;
+    --shadow-pink: 0 2px 8px rgba(233, 30, 99, 0.2);
+    --shadow-blue: 0 2px 8px rgba(33, 150, 243, 0.2);
+    --shadow-purple: 0 2px 8px rgba(156, 39, 176, 0.2);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+    background: var(--bg-darker);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    transition: var(--transition);
+}
+
+/* Botón de tema */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: var(--bg-card);
+    border: 2px solid var(--neon-purple);
+    padding: 12px 24px;
+    border-radius: 50px;
+    color: var(--text-primary);
+    cursor: pointer;
+    font-weight: 600;
+    box-shadow: var(--shadow-purple);
+    transition: var(--transition);
+}
+
+.theme-toggle:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-purple), 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Efectos de glow en textos importantes */
+.glow-text {
+    text-shadow: 0 0 10px var(--neon-blue),
+    0 0 20px var(--neon-blue),
+    0 0 30px var(--neon-blue);
+}
+
+.glow-pink {
+    text-shadow: 0 0 10px var(--neon-pink),
+    0 0 20px var(--neon-pink);
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-darker);
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--neon-purple), var(--neon-blue));
+    border-radius: 10px;
+    border: 2px solid var(--bg-darker);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--neon-pink), var(--neon-purple));
+}
+
+/* Animaciones */
+@keyframes neonPulse {
+    0%, 100% {
+        box-shadow: 0 0 5px var(--neon-blue),
+        0 0 10px var(--neon-blue);
+    }
+    50% {
+        box-shadow: 0 0 10px var(--neon-blue),
+        0 0 20px var(--neon-blue),
+        0 0 30px var(--neon-blue);
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-slide-in {
+    animation: slideInUp 0.6s ease-out;
+}
+
+/* Grid de películas estilo TMDB */
+.movies-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    padding: 20px 0;
+}
+
+/* Tarjeta de película */
+.movie-card {
+    background: var(--bg-card);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    transition: var(--transition);
+    border: 1px solid transparent;
+    position: relative;
+}
+
+.movie-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--neon-purple);
+    box-shadow: var(--shadow-purple), 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.movie-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+}
+
+.movie-card-info {
+    padding: 15px;
+}
+
+.movie-card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.movie-card-rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--neon-yellow);
+    font-weight: 600;
+}
+
+/* Content row (fila horizontal con scroll) */
+.content-row {
+    margin-bottom: 50px;
+}
+
+.content-row-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.content-row-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.content-row-title:hover {
+    color: var(--neon-pink);
+    text-shadow: var(--shadow-pink);
+}
+
+.view-all-link {
+    color: var(--neon-blue);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 8px 16px;
+    border: 2px solid var(--neon-blue);
+    border-radius: 25px;
+    transition: var(--transition);
+}
+
+.view-all-link:hover {
+    background: var(--neon-blue);
+    color: var(--bg-dark);
+    box-shadow: var(--shadow-blue);
+}
+
+.content-row-container {
+    position: relative;
+}
+
+.content-row-scroll {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 10px 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--neon-purple) var(--bg-darker);
+}
+
+.content-row-scroll::-webkit-scrollbar {
+    height: 8px;
+}
+
+.content-row-item {
+    flex: 0 0 auto;
+    width: 200px;
+}
+
+/* Botones de navegación del scroll */
+.scroll-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--bg-card);
+    border: 2px solid var(--neon-purple);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: var(--transition);
+    color: var(--text-primary);
+    font-size: 1.5rem;
+}
+
+.scroll-btn:hover {
+    background: var(--neon-purple);
+    box-shadow: var(--shadow-purple);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.scroll-btn-left {
+    left: -25px;
+}
+
+.scroll-btn-right {
+    right: -25px;
+}
+
+/* Responsive */
+@media (max-width: 1400px) {
+    .movies-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 1024px) {
+    .movies-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .movies-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .content-row-item {
+        width: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .movies-grid {
+        grid-template-columns: 1fr;
+    }
+}

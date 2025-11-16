@@ -1,0 +1,224 @@
+<!-- src/frontend/src/views/search-actors.ejs - NUEVA VISTA -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actores: <%= searchTerm %> - MovieWeb</title>
+    <link rel="stylesheet" href="/css/theme-cyberpunk.css">
+    <style>
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        .people-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        .person-card {
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            padding: 30px 20px;
+            text-align: center;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .person-card:hover {
+            border-color: var(--neon-purple);
+            box-shadow: var(--shadow-purple);
+            transform: translateY(-5px);
+        }
+
+        .person-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+
+        .person-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            padding: 12px 24px;
+            background: var(--bg-card);
+            border: 2px solid var(--neon-blue);
+            border-radius: 30px;
+            color: var(--neon-blue);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .back-link:hover {
+            background: var(--neon-blue);
+            color: var(--bg-dark);
+            box-shadow: var(--shadow-blue);
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 40px 20px;
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            border: 2px solid var(--neon-purple);
+        }
+
+        .search-term {
+            color: var(--neon-pink);
+            font-style: italic;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 50px 0;
+            flex-wrap: wrap;
+        }
+
+        .pagination-btn {
+            padding: 12px 20px;
+            background: var(--bg-card);
+            border: 2px solid var(--neon-purple);
+            border-radius: 8px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .pagination-btn:hover:not(.disabled) {
+            background: var(--neon-purple);
+            box-shadow: var(--shadow-purple);
+            transform: translateY(-2px);
+        }
+
+        .pagination-btn.active {
+            background: linear-gradient(45deg, var(--neon-pink), var(--neon-purple));
+            border-color: var(--neon-pink);
+        }
+
+        .pagination-btn.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .pagination-info {
+            padding: 12px 24px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        @media (max-width: 1400px) {
+            .people-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+        @media (max-width: 1024px) {
+            .people-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .people-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 480px) {
+            .people-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<button id="theme-toggle" class="theme-toggle">
+    <span id="theme-icon">🌙</span> Tema
+</button>
+
+<div class="container">
+    <a href="/" class="back-link">← Nueva búsqueda</a>
+
+    <div class="page-header">
+        <h1 style="font-size: 2.5rem; color: var(--text-primary); margin-bottom: 15px;">
+            Actores: <span class="search-term">"<%= searchTerm %>"</span>
+        </h1>
+        <p style="font-size: 1.2rem; color: var(--text-secondary);">
+            <%= pagination.totalItems %> resultados encontrados
+        </p>
+    </div>
+
+    <% if (actors && actors.length > 0) { %>
+        <div class="people-grid">
+            <% actors.forEach(actor => { %>
+                <a href="/actor/<%= actor.person_id %>" style="text-decoration: none;">
+                    <div class="person-card">
+                        <div class="person-icon">🎭</div>
+                        <div class="person-name"><%= actor.person_name %></div>
+                    </div>
+                </a>
+            <% }); %>
+        </div>
+
+        <!-- Paginación -->
+        <div class="pagination">
+            <% if (pagination.currentPage > 1) { %>
+                <a href="/search/actors?q=<%= encodeURIComponent(searchTerm) %>&page=1" class="pagination-btn">««</a>
+            <% } else { %>
+                <span class="pagination-btn disabled">««</span>
+            <% } %>
+
+            <% if (pagination.hasPrevPage) { %>
+                <a href="/search/actors?q=<%= encodeURIComponent(searchTerm) %>&page=<%= pagination.currentPage - 1 %>" class="pagination-btn">‹ Anterior</a>
+            <% } else { %>
+                <span class="pagination-btn disabled">‹ Anterior</span>
+            <% } %>
+
+            <span class="pagination-info">
+                    Página <%= pagination.currentPage %> de <%= pagination.totalPages %>
+                </span>
+
+            <% if (pagination.hasNextPage) { %>
+                <a href="/search/actors?q=<%= encodeURIComponent(searchTerm) %>&page=<%= pagination.currentPage + 1 %>" class="pagination-btn">Siguiente ›</a>
+            <% } else { %>
+                <span class="pagination-btn disabled">Siguiente ›</span>
+            <% } %>
+
+            <% if (pagination.currentPage < pagination.totalPages) { %>
+                <a href="/search/actors?q=<%= encodeURIComponent(searchTerm) %>&page=<%= pagination.totalPages %>" class="pagination-btn">»»</a>
+            <% } else { %>
+                <span class="pagination-btn disabled">»»</span>
+            <% } %>
+        </div>
+    <% } else { %>
+        <div style="text-align: center; padding: 100px 20px; color: var(--text-muted); font-size: 1.3rem;">
+            <p>No se encontraron actores con "<%= searchTerm %>"</p>
+        </div>
+    <% } %>
+</div>
+
+<script>
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-theme');
+        themeIcon.textContent = '☀️';
+    }
+
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('light-theme');
+        const isLight = document.body.classList.contains('light-theme');
+        themeIcon.textContent = isLight ? '☀️' : '🌙';
+        localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    });
+</script>
+</body>
+</html>
