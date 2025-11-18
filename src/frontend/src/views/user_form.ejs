@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= user ? 'Editar Usuario' : 'Crear Usuario' %> - MovieWeb</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        .form-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .error-message {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+<%- include('partials/header') %>
+
+<div class="form-container">
+    <h1><%= user ? 'Editar Usuario' : 'Crear Nuevo Usuario' %></h1>
+
+    <form method="POST" action="<%= action %>">
+        <div class="form-group">
+            <label for="user_username">Username *</label>
+            <input
+                    type="text"
+                    id="user_username"
+                    name="user_username"
+                    value="<%= user ? user.user_username : '' %>"
+                    required
+                    pattern="[a-zA-Z0-9_]{3,50}"
+                    title="El username debe tener entre 3 y 50 caracteres (solo letras, números y guiones bajos)"
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="user_name">Nombre Completo *</label>
+            <input
+                    type="text"
+                    id="user_name"
+                    name="user_name"
+                    value="<%= user ? user.user_name : '' %>"
+                    required
+                    maxlength="100"
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="user_email">Email *</label>
+            <input
+                    type="email"
+                    id="user_email"
+                    name="user_email"
+                    value="<%= user ? user.user_email : '' %>"
+                    required
+                    maxlength="100"
+            >
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <%= user ? 'Actualizar' : 'Crear' %> Usuario
+            </button>
+            <a href="/users" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<%- include('partials/footer') %>
+</body>
+</html>

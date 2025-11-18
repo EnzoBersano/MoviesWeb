@@ -1,3 +1,4 @@
+// config/mongodb.js
 const { MongoClient } = require('mongodb');
 
 class MongoDB {

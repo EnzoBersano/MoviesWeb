@@ -1,12 +1,18 @@
 {
   "name": "movieweb",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Buscador de películas estilo TMDB con tema cyberpunk",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "jest --coverage"
   },
-  "keywords": [],
+  "keywords": [
+    "movies",
+    "tmdb",
+    "cyberpunk"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -15,5 +21,9 @@
     "express": "^4.18.2",
     "mongodb": "^6.20.0",
     "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.1"
   }
 }

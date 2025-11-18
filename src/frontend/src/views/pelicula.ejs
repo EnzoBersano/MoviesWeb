@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <link rel="stylesheet" href="/css/theme-cyberpunk.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= movie.title %> - MovieWeb</title>
@@ -8,6 +9,9 @@
     <link rel="stylesheet" href="../css/movie.css">
 </head>
 <body>
+<button id="theme-toggle" class="theme-toggle">
+    <span id="theme-icon">🌙</span> Tema
+</button>
 <div class="container">
     <div class="home-link">
         <a href="/">← Volver al inicio</a>
@@ -207,5 +211,22 @@
         <% } %>
     </div>
 </div>
+<script>
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-theme');
+        themeIcon.textContent = '☀️';
+    }
+
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('light-theme');
+        const isLight = document.body.classList.contains('light-theme');
+        themeIcon.textContent = isLight ? '☀️' : '🌙';
+        localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    });
+</script>
 </body>
 </html>
