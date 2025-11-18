@@ -40,7 +40,12 @@ class UserController {
     // Mostrar formulario de edición
     async showEditForm(req, res) {
         try {
-            const userId = req.params.id;
+            const userId = parseInt(req.params.id);
+
+            if (isNaN(userId)) {
+                return res.status(400).send('ID de usuario inválido');
+            }
+
             const user = await userService.getUserById(userId);
             res.render('users/edit', { user });
         } catch (error) {
@@ -52,7 +57,12 @@ class UserController {
     // Actualizar usuario
     async updateUser(req, res) {
         try {
-            const userId = req.params.id;
+            const userId = parseInt(req.params.id);
+
+            if (isNaN(userId)) {
+                return res.status(400).send('ID de usuario inválido');
+            }
+
             const userData = {
                 username: req.body.username,
                 name: req.body.name,
@@ -63,7 +73,7 @@ class UserController {
             res.redirect('/users');
         } catch (error) {
             console.error('Error actualizando usuario:', error);
-            const user = await userService.getUserById(req.params.id);
+            const user = await userService.getUserById(parseInt(req.params.id));
             res.render('users/edit', {
                 user,
                 error: error.message
@@ -74,7 +84,12 @@ class UserController {
     // Eliminar usuario
     async deleteUser(req, res) {
         try {
-            const userId = req.params.id;
+            const userId = parseInt(req.params.id);
+
+            if (isNaN(userId)) {
+                return res.status(400).send('ID de usuario inválido');
+            }
+
             await userService.deleteUser(userId);
             res.redirect('/users');
         } catch (error) {
@@ -86,7 +101,12 @@ class UserController {
     // Ver perfil de usuario con sus películas
     async viewUserProfile(req, res) {
         try {
-            const userId = req.params.id;
+            const userId = parseInt(req.params.id);
+
+            if (isNaN(userId)) {
+                return res.status(400).send('ID de usuario inválido');
+            }
+
             const data = await userService.getUserWithMovies(userId);
             res.render('users/profile', data);
         } catch (error) {
@@ -98,8 +118,13 @@ class UserController {
     // Agregar película a usuario
     async addMovieToUser(req, res) {
         try {
-            const userId = req.params.userId;
-            const movieId = req.body.movieId;
+            const userId = parseInt(req.params.userId);
+            const movieId = parseInt(req.body.movieId);
+
+            if (isNaN(userId) || isNaN(movieId)) {
+                return res.status(400).send('IDs inválidos');
+            }
+
             const rating = req.body.rating ? parseFloat(req.body.rating) : null;
             const opinion = req.body.opinion || null;
 
@@ -114,8 +139,12 @@ class UserController {
     // Eliminar película de usuario
     async removeMovieFromUser(req, res) {
         try {
-            const userId = req.params.userId;
-            const movieId = req.params.movieId;
+            const userId = parseInt(req.params.userId);
+            const movieId = parseInt(req.params.movieId);
+
+            if (isNaN(userId) || isNaN(movieId)) {
+                return res.status(400).send('IDs inválidos');
+            }
 
             await userService.removeMovieFromUser(userId, movieId);
             res.redirect(`/users/${userId}`);

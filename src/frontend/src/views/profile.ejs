@@ -22,6 +22,13 @@
             --border: #e5e7eb;
             --link: #0a66c2;
             --accent: #4f46e5;
+            --primary-color: #0078d4;
+            --primary-hover: #0056b3;
+            --background: #f5f7fa;
+            --border-color: #e1e4e8;
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
+            --card-background: #ffffff;
         }
 
         :root.dark {
@@ -33,6 +40,11 @@
             --border: #1f2937;
             --link: #7aa2f7;
             --accent: #8b5cf6;
+            --primary-color: #0078d4;
+            --primary-hover: #0056b3;
+            --background: #0f1520;
+            --border-color: #1f2937;
+            --card-background: #0d1117;
         }
 
         html {
@@ -47,6 +59,30 @@
             margin: 0 auto;
             background-color: var(--bg);
             color: var(--text);
+        }
+
+        /* Estilos para el enlace de volver al inicio */
+        .home-link {
+            margin-bottom: 20px;
+        }
+
+        .home-link a {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 16px;
+            background-color: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            transition: var(--transition);
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+
+        .home-link a:hover {
+            background-color: var(--background);
+            border-color: var(--primary-color);
         }
 
         .header {
@@ -225,9 +261,42 @@
         div {
             color: var(--text);
         }
+
+        /* Nuevos estilos para navegación adicional */
+        .profile-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 10px 16px;
+            background-color: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            transition: var(--transition);
+            text-decoration: none;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .action-button:hover {
+            background-color: var(--background);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
     </style>
 </head>
 <body>
+
+<!-- ENLACE PARA VOLVER AL BUSCADOR PRINCIPAL -->
+<div class="home-link">
+    <a href="/">← Volver al Buscador Principal</a>
+</div>
 
 <div class="header">
     <h1>👤 Perfil de <%= userId %></h1>
@@ -237,6 +306,13 @@
             <span id="theme-toggle-label">Dark</span>
         </button>
     </div>
+</div>
+
+<!-- ACCIONES ADICIONALES -->
+<div class="profile-actions">
+    <a href="/users" class="action-button">👤 Gestión de Usuarios</a>
+    <a href="/activity/feed" class="action-button">📊 Actividad Global</a>
+    <a href="/users/<%= userId %>" class="action-button">🎬 Mis Películas</a>
 </div>
 
 <div class="stats">

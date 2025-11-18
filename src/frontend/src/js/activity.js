@@ -1,12 +1,9 @@
-// src/frontend/src/js/activity.js
-
-// ID del usuario actual (en producción, esto vendría de la sesión)
 const CURRENT_USER_ID = 'user_abc';
 
 // Registrar calificación
 async function registerRating(movieId, movieTitle, rating) {
     try {
-        const response = await fetch('/profile/api/rate', {
+        const response = await fetch('/activity/rate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -19,7 +16,7 @@ async function registerRating(movieId, movieTitle, rating) {
 
         const data = await response.json();
         if (data.success) {
-            console.log('✅ Calificación registrada');
+            console.log(' Calificación registrada');
         }
     } catch (error) {
         console.error('Error al registrar calificación:', error);
@@ -29,7 +26,7 @@ async function registerRating(movieId, movieTitle, rating) {
 // Registrar reseña
 async function registerReview(movieId, movieTitle, reviewText) {
     try {
-        const response = await fetch('/profile/api/review', {
+        const response = await fetch('/activity/review', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -42,7 +39,7 @@ async function registerReview(movieId, movieTitle, reviewText) {
 
         const data = await response.json();
         if (data.success) {
-            console.log('✅ Reseña registrada');
+            console.log(' Reseña registrada');
         }
     } catch (error) {
         console.error('Error al registrar reseña:', error);
@@ -52,7 +49,7 @@ async function registerReview(movieId, movieTitle, reviewText) {
 // Registrar favorito
 async function registerFavorite(movieId, movieTitle) {
     try {
-        const response = await fetch('/profile/api/favorite', {
+        const response = await fetch('/activity/favorite', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -64,14 +61,14 @@ async function registerFavorite(movieId, movieTitle) {
 
         const data = await response.json();
         if (data.success) {
-            console.log('✅ Favorito registrado');
+            console.log(' Favorito registrado');
         }
     } catch (error) {
         console.error('Error al registrar favorito:', error);
     }
 }
 
-// Exportar funciones (si usas módulos)
+
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { registerRating, registerReview, registerFavorite };
 }

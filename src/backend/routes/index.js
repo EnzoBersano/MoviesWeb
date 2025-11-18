@@ -2,6 +2,8 @@
 // Agregar rutas nuevas
 const express = require('express');
 const router = express.Router();
+const activityService = require('../service/activity.service');
+const pool = require('./../../../config/database');
 
 const searchController = require('../controllers/search.controller');
 const movieController = require('../controllers/movie.controller');

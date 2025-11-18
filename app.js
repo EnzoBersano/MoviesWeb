@@ -2,15 +2,8 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
-
-// === Bases de datos ===
-const { connectMongo, getDb, closeMongo } = require('./config/mongo-config'); // driver nativo
-const { connectMongoose, closeMongoose } = require('./config/mongoose');      // mongoose
-const { pool } = require('./config/pg-config');                                // postgres
-
-// === Rutas ===
+const mongoDB = require('./src/backend/config/mongodb');
 const mainRoutes = require('./src/backend/routes/index.js');
-const profileRoutes = require('./src/backend/routes/profileRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3500;
@@ -56,20 +49,7 @@ async function registrarActividad(userId, type, details) {
 
 // --- Rutas base ---
 app.use('/', mainRoutes);
-app.use('/profile', profileRoutes);
-
-// ============================================
-// LISTAR TODOS LOS USUARIOS
-// ============================================
-app.get('/users', async (req, res) => {
-    try {
-        const result = await pool.query('SELECT * FROM users ORDER BY user_name');
-        res.render('users', { users: result.rows });
-    } catch (err) {
-        console.error('Error listando usuarios:', err);
-        res.status(500).send('Error al obtener usuarios');
-    }
-});
+app.use('/profile', profileRoutes); // 👈 NUEVA LÍNEA
 
 // ============================================
 // FORMULARIO PARA CREAR USUARIO
@@ -339,30 +319,27 @@ app.use((req, res) => {
 // --- Inicialización del servidor ---
 async function startServer() {
     try {
-        await connectMongo();     // driver nativo (helpers, colecciones simples)
-        await connectMongoose();  // Mongoose (para tus servicios/modelos)
+        // Conectar a MongoDB nativo
+        await mongoDB.connect();
+
         app.listen(PORT, () => {
-            console.log(`✅ Servidor en ejecución en http://localhost:${PORT}`);
-            console.log(`📊 Perfil de usuario: http://localhost:${PORT}/profile/user_abc`);
+            console.log(` Servidor en ejecución en http://localhost:${PORT}`);
+            console.log(` Buscador principal disponible en http://localhost:${PORT}/`);
+            console.log(` Timeline integrado en el buscador principal`);
+            console.log(`  Usando MongoDB nativo (sin Mongoose)`);
         });
     } catch (error) {
-        console.error('❌ Error al iniciar el servidor:', error);
+        console.error(' Error al iniciar el servidor:', error);
         process.exit(1);
     }
 }
 
-// --- Cierre limpio ---
+// --- Cierre limpio de conexión Mongo ---
 process.on('SIGINT', async () => {
-    try {
-        console.log('\n🔄 Cerrando conexiones...');
-        await closeMongoose();
-        await closeMongo();
-        console.log('👋 Servidor cerrado correctamente');
-    } catch (e) {
-        console.error('Error cerrando conexiones:', e);
-    } finally {
-        process.exit(0);
-    }
+    console.log('\n Cerrando conexión a MongoDB...');
+    await mongoDB.disconnect();
+    console.log(' Servidor cerrado correctamente');
+    process.exit(0);
 });
 
 startServer();
