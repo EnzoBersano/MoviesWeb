@@ -1,10 +1,9 @@
-// src/backend/service/genre.service.js - NUEVA CLASE
-// Lógica de negocio para géneros
+// src/backend/service/genre.service.js - AGREGAR ESTA FUNCIÓN
 const genreRepository = require('../repository/genre.repository');
 const tmdbConfig = require('../config/tmdb');
 
 class GenreService {
-    // Obtener todos los géneros con películas populares
+    // Obtener todos los géneros con películas populares (FUNCIÓN FALTANTE)
     async getGenresWithPopularMovies() {
         try {
             const genres = await genreRepository.getAllGenres();
@@ -15,7 +14,8 @@ class GenreService {
                         ...genre,
                         movies: movies.map(movie => ({
                             ...movie,
-                            poster_url: tmdbConfig.getPosterUrl(movie.poster_path, 'medium')
+                            vote_average: parseFloat(movie.vote_average) || 0, // Convertir a número
+                            poster_url: '/assets/no-image.png'
                         }))
                     };
                 })
@@ -43,7 +43,8 @@ class GenreService {
                 genre: genre || { genre_name: 'Desconocido' },
                 movies: movies.map(movie => ({
                     ...movie,
-                    poster_url: tmdbConfig.getPosterUrl(movie.poster_path, 'medium')
+                    vote_average: parseFloat(movie.vote_average) || 0, // Convertir a número
+                    poster_url: '/assets/no-image.png'
                 })),
                 pagination: {
                     currentPage: page,

@@ -1,5 +1,4 @@
-// src/backend/repository/genre.repository.js - NUEVA CLASE
-// Repositorio para operaciones de géneros y películas por género
+// src/backend/repository/genre.repository.js - VERSIÓN CORREGIDA
 const pool = require('../../../config/db');
 
 class GenreRepository {
@@ -17,12 +16,12 @@ class GenreRepository {
     // Obtener películas populares por género (para página principal)
     async getPopularMoviesByGenre(genreId, limit = 10) {
         const query = `
-            SELECT DISTINCT m.movie_id, m.title, m.poster_path, m.vote_average, m.release_date
+            SELECT m.movie_id, m.title, m.vote_average, m.release_date, m.popularity
             FROM movies.movie m
-            INNER JOIN movies.movie_genres mg ON m.movie_id = mg.movie_id
-            WHERE mg.genre_id = $1 AND m.poster_path IS NOT NULL
+                     INNER JOIN movies.movie_genres mg ON m.movie_id = mg.movie_id
+            WHERE mg.genre_id = $1
             ORDER BY m.popularity DESC, m.vote_average DESC
-            LIMIT $2
+                LIMIT $2
         `;
         try {
             const result = await pool.query(query, [genreId, limit]);
@@ -36,12 +35,12 @@ class GenreRepository {
     async getMoviesByGenre(genreId, page = 1, limit = 50) {
         const offset = (page - 1) * limit;
         const query = `
-            SELECT DISTINCT m.movie_id, m.title, m.poster_path, m.vote_average, m.release_date
+            SELECT m.movie_id, m.title, m.vote_average, m.release_date, m.popularity
             FROM movies.movie m
-            INNER JOIN movies.movie_genres mg ON m.movie_id = mg.movie_id
-            WHERE mg.genre_id = $1 AND m.poster_path IS NOT NULL
+                     INNER JOIN movies.movie_genres mg ON m.movie_id = mg.movie_id
+            WHERE mg.genre_id = $1
             ORDER BY m.popularity DESC
-            LIMIT $2 OFFSET $3
+                LIMIT $2 OFFSET $3
         `;
         try {
             const result = await pool.query(query, [genreId, limit, offset]);
@@ -54,10 +53,10 @@ class GenreRepository {
     // Contar total de películas por género
     async countMoviesByGenre(genreId) {
         const query = `
-            SELECT COUNT(DISTINCT m.movie_id) as total
+            SELECT COUNT(m.movie_id) as total
             FROM movies.movie m
-            INNER JOIN movies.movie_genres mg ON m.movie_id = mg.movie_id
-            WHERE mg.genre_id = $1 AND m.poster_path IS NOT NULL
+                     INNER JOIN movies.movie_genres mg ON m.movie_id = mg.movie_id
+            WHERE mg.genre_id = $1
         `;
         try {
             const result = await pool.query(query, [genreId]);

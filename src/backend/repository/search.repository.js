@@ -7,11 +7,11 @@ class SearchRepository {
     async searchMovies(searchTerm, page = 1, limit = 50) {
         const offset = (page - 1) * limit;
         const query = `
-            SELECT movie_id, title, poster_path, vote_average, release_date  
-            FROM movies.movie 
-            WHERE title ILIKE $1 AND poster_path IS NOT NULL
+            SELECT movie_id, title, vote_average, release_date
+            FROM movies.movie
+            WHERE title ILIKE $1
             ORDER BY popularity DESC
-            LIMIT $2 OFFSET $3
+                LIMIT $2 OFFSET $3
         `;
         const values = [`%${searchTerm}%`, limit, offset];
 
@@ -23,12 +23,12 @@ class SearchRepository {
         }
     }
 
-    // Contar películas en búsqueda
+// Contar películas en búsqueda
     async countMovies(searchTerm) {
         const query = `
             SELECT COUNT(*) as total
             FROM movies.movie
-            WHERE title ILIKE $1 AND poster_path IS NOT NULL
+            WHERE title ILIKE $1
         `;
         try {
             const result = await pool.query(query, [`%${searchTerm}%`]);

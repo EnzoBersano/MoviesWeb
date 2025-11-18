@@ -16,7 +16,8 @@ class SearchService {
             return {
                 movies: movies.map(m => ({
                     ...m,
-                    poster_url: tmdbConfig.getPosterUrl(m.poster_path, 'medium')
+                    vote_average: parseFloat(m.vote_average) || 0, // Convertir a número
+                    poster_url: '/assets/no-image.png'
                 })),
                 actors,
                 directors,
@@ -42,7 +43,8 @@ class SearchService {
             return {
                 movies: movies.map(m => ({
                     ...m,
-                    poster_url: tmdbConfig.getPosterUrl(m.poster_path, 'medium')
+                    vote_average: parseFloat(m.vote_average) || 0, // Convertir a número
+                    poster_url: '/assets/no-image.png'
                 })),
                 pagination: {
                     currentPage: page,

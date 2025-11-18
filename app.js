@@ -49,8 +49,6 @@ async function registrarActividad(userId, type, details) {
 
 // --- Rutas base ---
 app.use('/', mainRoutes);
-app.use('/profile', profileRoutes); // 👈 NUEVA LÍNEA
-
 // ============================================
 // FORMULARIO PARA CREAR USUARIO
 // ============================================
