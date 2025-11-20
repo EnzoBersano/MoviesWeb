@@ -20,11 +20,7 @@ class AuthController {
                 name
             });
 
-            res.status(201).json({
-                success: true,
-                message: 'Usuario registrado exitosamente',
-                data: result
-            });
+            return res.redirect('/login?registered=true');
         } catch (error) {
             console.error('Error en registro:', error);
 
@@ -55,12 +51,13 @@ class AuthController {
             }
 
             const result = await authService.loginUser(email, password);
-
-            res.status(200).json({
-                success: true,
-                message: 'Login exitoso',
-                data: result
+            // Guardar token en cookie HttpOnly
+            res.cookie("token", result.token, {
+                httpOnly: true,
+                secure: false,
+                maxAge: 24 * 60 * 60 * 1000
             });
+            return res.redirect('/activity/feed');
         } catch (error) {
             console.error('Error en login:', error);
 

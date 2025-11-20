@@ -4,6 +4,7 @@ const express = require('express');
 const path = require('path');
 const mongoDB = require('./src/backend/config/mongodb');
 const mainRoutes = require('./src/backend/routes/index.js');
+const cookieParser = require("cookie-parser");
 
 const app = express();
 const PORT = process.env.PORT || 3500;
@@ -15,6 +16,7 @@ app.set('views', path.join(__dirname, 'src/frontend/src/views'));
 // --- Middlewares ---
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Override de método (PUT/DELETE vía POST)
 app.use((req, res, next) => {
