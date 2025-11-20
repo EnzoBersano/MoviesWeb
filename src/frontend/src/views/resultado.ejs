@@ -3,29 +3,364 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resultados de Búsqueda</title>
-    <link rel="stylesheet" href="../css/common.css">
-    <link rel="stylesheet" href="../css/resultado.css">
+    <title>Resultados de Búsqueda - MovieWeb</title>
+    <link rel="stylesheet" href="/css/theme-cyberpunk.css">
+    <style>
+        .search-results-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: transparent;
+            border: 2px solid var(--neon-green);
+            border-radius: 25px;
+            color: var(--neon-green);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .back-button:hover {
+            background: var(--neon-green);
+            color: var(--bg-dark);
+            box-shadow: var(--shadow-green);
+            transform: translateY(-2px);
+        }
+
+        .results-header {
+            text-align: center;
+            padding: 40px 0;
+            border-bottom: 2px solid var(--neon-pink);
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .results-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg,
+            transparent,
+            var(--neon-blue),
+            var(--neon-pink),
+            var(--neon-blue),
+            transparent
+            );
+            animation: scanline 3s linear infinite;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, var(--neon-pink), var(--neon-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(255, 0, 255, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .search-term {
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+            font-size: 1.3rem;
+        }
+
+        .total-results {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+
+        /* Tabs Navigation */
+        .tabs-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab-button {
+            padding: 15px 25px;
+            background: var(--bg-card);
+            border: 2px solid var(--neon-purple);
+            border-radius: var(--border-radius);
+            color: var(--text-primary);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        .tab-button:hover {
+            background: rgba(191, 0, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .tab-button.active {
+            background: linear-gradient(45deg, var(--neon-pink), var(--neon-purple));
+            border-color: var(--neon-pink);
+            box-shadow: var(--shadow-pink);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Results Grid for Movies */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .result-card {
+            background: var(--bg-card);
+            border: 1px solid var(--neon-blue);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 245, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .result-card:hover::before {
+            left: 100%;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-blue);
+            border-color: var(--neon-pink);
+        }
+
+        .result-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .result-card h3 {
+            color: var(--neon-blue);
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            text-shadow: 0 0 5px var(--neon-blue);
+        }
+
+        .meta {
+            color: var(--neon-green);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .overview {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        /* Results List for People */
+        .results-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .result-item {
+            background: var(--bg-card);
+            border: 1px solid var(--neon-green);
+            border-radius: var(--border-radius);
+            padding: 15px 20px;
+            transition: var(--transition);
+        }
+
+        .result-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-green);
+            border-color: var(--neon-blue);
+        }
+
+        .person-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(45deg, var(--neon-pink), var(--neon-blue));
+            border-radius: 50%;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .person-name {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* Keywords Grid */
+        .keywords-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .keyword-tag {
+            background: rgba(191, 0, 255, 0.2);
+            border: 1px solid var(--neon-purple);
+            border-radius: 20px;
+            padding: 10px 20px;
+            transition: var(--transition);
+        }
+
+        .keyword-tag:hover {
+            background: var(--neon-purple);
+            transform: scale(1.05);
+            box-shadow: var(--shadow-purple);
+        }
+
+        .keyword-link {
+            color: var(--neon-purple);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .keyword-tag:hover .keyword-link {
+            color: var(--bg-dark);
+        }
+
+        /* Empty States */
+        .empty-section {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            border: 2px dashed var(--neon-pink);
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-secondary);
+        }
+
+        .no-results h2 {
+            color: var(--neon-pink);
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs-nav {
+                flex-direction: column;
+            }
+
+            .tab-button {
+                text-align: center;
+            }
+
+            .keywords-grid {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .result-card {
+                padding: 15px;
+            }
+
+            .tab-button {
+                padding: 12px 20px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-    <h1 class="page-title">Resultados de búsqueda: "<%= searchTerm %>"</h1>
+<!-- Botón de cambio de tema -->
+<button id="theme-toggle" class="theme-toggle">
+    <span id="theme-icon">🌙</span>
+    <span id="theme-text">Modo Oscuro</span>
+</button>
 
-    <div class="home-link">
-        <a href="/">← Volver al inicio</a>
+<!-- Efecto de partículas -->
+<div class="particles" id="particles"></div>
+
+<div class="search-results-container">
+    <a href="/" class="back-button">← Volver al inicio</a>
+
+    <div class="results-header">
+        <h1 class="page-title">🔍 RESULTADOS DE BÚSQUEDA</h1>
+        <p class="search-term">"<%= searchTerm %>"</p>
+
+        <%
+        const totalMovies = movies.length;
+        const totalActors = actors.length;
+        const totalDirectors = directors.length;
+        const totalKeywords = keywords.length;
+        const total = totalMovies + totalActors + totalDirectors + totalKeywords;
+        %>
+
+        <p class="total-results"><%= total %> resultados encontrados</p>
     </div>
-
-    <%
-    const totalMovies = movies.length;
-    const totalActors = actors.length;
-    const totalDirectors = directors.length;
-    const totalKeywords = keywords.length;
-    const total = totalMovies + totalActors + totalDirectors + totalKeywords;
-    %>
 
     <% if (total === 0) { %>
         <div class="no-results">
-            <p>No se encontraron resultados para "<%= searchTerm %>"</p>
+            <h2>🚫 No se encontraron resultados</h2>
+            <p>No hay resultados para "<%= searchTerm %>"</p>
+            <p style="margin-top: 20px; color: var(--neon-blue);">
+                Intenta con otros términos de búsqueda
+            </p>
         </div>
     <% } else { %>
         <!-- Navbar con tabs -->
@@ -34,20 +369,22 @@
                 Películas (<%= totalMovies %>)
             </button>
             <button class="tab-button" data-tab="actors">
-                Actores (<%= totalActors %>)
+                 Actores (<%= totalActors %>)
             </button>
             <button class="tab-button" data-tab="directors">
-                Directores (<%= totalDirectors %>)
+                 Directores (<%= totalDirectors %>)
             </button>
             <button class="tab-button" data-tab="keywords">
-                Keywords (<%= totalKeywords %>)
+                 Keywords (<%= totalKeywords %>)
             </button>
         </div>
 
         <!-- Sección de Películas -->
         <div class="tab-content active" id="movies">
             <% if (totalMovies === 0) { %>
-                <p class="empty-section">No se encontraron películas</p>
+                <div class="empty-section">
+                    <p>No se encontraron películas para "<%= searchTerm %>"</p>
+                </div>
             <% } else { %>
                 <div class="results-grid">
                     <% movies.forEach(movie => { %>
@@ -55,7 +392,10 @@
                             <a href="/pelicula/<%= movie.movie_id %>" class="result-link">
                                 <h3><%= movie.title %></h3>
                                 <% if (movie.release_date) { %>
-                                    <p class="meta">Año: <%= new Date(movie.release_date).getFullYear() %></p>
+                                    <p class="meta"> <%= new Date(movie.release_date).getFullYear() %></p>
+                                <% } %>
+                                <% if (movie.vote_average) { %>
+                                    <p class="meta"><%= movie.vote_average %>/10</p>
                                 <% } %>
                                 <% if (movie.overview) { %>
                                     <p class="overview"><%= movie.overview.substring(0, 150) %>...</p>
@@ -70,7 +410,9 @@
         <!-- Sección de Actores -->
         <div class="tab-content" id="actors">
             <% if (totalActors === 0) { %>
-                <p class="empty-section">No se encontraron actores</p>
+                <div class="empty-section">
+                    <p>No se encontraron actores para "<%= searchTerm %>"</p>
+                </div>
             <% } else { %>
                 <div class="results-list">
                     <% actors.forEach(actor => { %>
@@ -88,7 +430,9 @@
         <!-- Sección de Directores -->
         <div class="tab-content" id="directors">
             <% if (totalDirectors === 0) { %>
-                <p class="empty-section">No se encontraron directores</p>
+                <div class="empty-section">
+                    <p>No se encontraron directores para "<%= searchTerm %>"</p>
+                </div>
             <% } else { %>
                 <div class="results-list">
                     <% directors.forEach(director => { %>
@@ -106,7 +450,9 @@
         <!-- Sección de Keywords -->
         <div class="tab-content" id="keywords">
             <% if (totalKeywords === 0) { %>
-                <p class="empty-section">No se encontraron keywords</p>
+                <div class="empty-section">
+                    <p>No se encontraron keywords para "<%= searchTerm %>"</p>
+                </div>
             <% } else { %>
                 <div class="keywords-grid">
                     <% keywords.forEach(keyword => { %>
@@ -122,6 +468,98 @@
     <% } %>
 </div>
 
-<script src="../js/resultado.js"></script>
+<script>
+    // Sistema de cambio de tema
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const themeText = document.getElementById('theme-text');
+
+    // Cargar tema guardado
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeButton(savedTheme);
+
+    themeToggle.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeButton(newTheme);
+    });
+
+    function updateThemeButton(theme) {
+        if (theme === 'dark') {
+            themeIcon.textContent = '🌙';
+            themeText.textContent = 'Modo Oscuro';
+        } else {
+            themeIcon.textContent = '☀️';
+            themeText.textContent = 'Modo Claro';
+        }
+    }
+
+    // Efecto de partículas
+    function createParticles() {
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 30;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.animationDelay = Math.random() * 20 + 's';
+            particle.style.animationDuration = (15 + Math.random() * 15) + 's';
+            particlesContainer.appendChild(particle);
+        }
+    }
+
+    // Funcionalidad de tabs
+    document.addEventListener('DOMContentLoaded', function() {
+        createParticles();
+
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const targetTab = this.getAttribute('data-tab');
+
+                // Remover clase active de todos los botones
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+
+                // Remover clase active de todos los contenidos
+                tabContents.forEach(content => content.classList.remove('active'));
+
+                // Agregar clase active al botón clickeado
+                this.classList.add('active');
+
+                // Mostrar el contenido correspondiente
+                const targetContent = document.getElementById(targetTab);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                }
+            });
+        });
+
+
+        function selectFirstNonEmptyTab() {
+            for (let i = 0; i < tabButtons.length; i++) {
+                const tab = tabButtons[i].getAttribute('data-tab');
+                const content = document.getElementById(tab);
+
+
+                const isEmpty = content.querySelector('.empty-section') !== null;
+
+                if (!isEmpty) {
+                    tabButtons[i].click();
+                    break;
+                }
+            }
+        }
+
+
+        selectFirstNonEmptyTab();
+    });
+</script>
 </body>
 </html>
