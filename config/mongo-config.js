@@ -1,4 +1,3 @@
-// config/mongo-config.js
 const { MongoClient } = require('mongodb');
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017';
@@ -12,7 +11,7 @@ async function connectMongo() {
     client = new MongoClient(MONGO_URI);
     await client.connect();
     db = client.db(DB_NAME);
-    console.log(`✅ Conectado a MongoDB → ${DB_NAME}`);
+    console.log(` Conectado a MongoDB → ${DB_NAME}`);
     return db;
 }
 
@@ -26,7 +25,7 @@ async function closeMongo() {
         await client.close();
         client = null;
         db = null;
-        console.log('🔒 Conexión MongoDB cerrada.');
+        console.log(' Conexión MongoDB cerrada.');
     }
 }
 

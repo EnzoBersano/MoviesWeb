@@ -2,42 +2,393 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Usuarios - MovieWeb</title>
-    <link rel="stylesheet" href="../css/common.css">
     <style>
-        body { font-family: Arial, sans-serif; margin: 2rem; }
-        h1 { color: #333; }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #ccc; padding: 0.5rem; text-align: left; }
-        th { background-color: #f0f0f0; }
-        a { text-decoration: none; color: #007bff; }
-        a:hover { text-decoration: underline; }
+        :root {
+            /* Colores Neon Cyberpunk */
+            --neon-pink: #ff006e;
+            --neon-blue: #00f5ff;
+            --neon-purple: #bf00ff;
+            --neon-green: #00ff41;
+            --neon-yellow: #ffea00;
+            --neon-red: #ff0033;
+
+            /* Fondos */
+            --bg-dark: #0a0e27;
+            --bg-darker: #050819;
+            --bg-card: #131935;
+            --bg-card-hover: #1a2142;
+
+            /* Textos */
+            --text-primary: #e0e0ff;
+            --text-secondary: #a8b2d1;
+            --text-muted: #717c9e;
+
+            /* Sombras Neon */
+            --shadow-pink: 0 0 20px rgba(255, 0, 110, 0.5);
+            --shadow-blue: 0 0 20px rgba(0, 245, 255, 0.5);
+            --shadow-purple: 0 0 20px rgba(191, 0, 255, 0.5);
+            --shadow-green: 0 0 20px rgba(0, 255, 65, 0.5);
+
+            /* Utilidades */
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--bg-darker);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            background-image:
+                    linear-gradient(rgba(0, 245, 255, 0.05) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(0, 245, 255, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        .cyber-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            border: 2px solid var(--neon-purple);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(191, 0, 255, 0.1), transparent);
+            animation: scanline 3s linear infinite;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, var(--neon-pink), var(--neon-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(255, 0, 255, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .page-subtitle {
+            color: var(--neon-blue);
+            font-size: 1.1rem;
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .users-table-container {
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--neon-blue);
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-card);
+        }
+
+        .users-table th {
+            background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue));
+            color: #000;
+            font-weight: bold;
+            padding: 15px;
+            text-align: left;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        .users-table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(0, 245, 255, 0.1);
+            color: var(--text-primary);
+            transition: var(--transition);
+        }
+
+        .users-table tr:hover td {
+            background: rgba(0, 245, 255, 0.05);
+            color: var(--neon-blue);
+        }
+
+        .users-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .no-users {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            border: 2px solid var(--neon-pink);
+        }
+
+        .no-users h2 {
+            color: var(--neon-pink);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .no-users p {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            padding: 12px 24px;
+            background: transparent;
+            border: 2px solid var(--neon-green);
+            border-radius: 30px;
+            color: var(--neon-green);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            margin-bottom: 30px;
+        }
+
+        .back-link:hover {
+            background: var(--neon-green);
+            color: var(--bg-dark);
+            box-shadow: var(--shadow-green);
+            transform: translateY(-2px);
+        }
+
+        .user-username {
+            color: var(--neon-yellow);
+            font-weight: bold;
+        }
+
+        .user-name {
+            color: var(--text-primary);
+        }
+
+        .user-email {
+            color: var(--neon-blue);
+        }
+
+        /* Botón de tema */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--bg-card);
+            border: 2px solid var(--neon-purple);
+            padding: 12px 20px;
+            border-radius: 50px;
+            color: var(--text-primary);
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: var(--shadow-purple);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: inherit;
+            backdrop-filter: blur(10px);
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-purple), 0 5px 15px rgba(0, 0, 0, 0.3);
+            background: var(--neon-purple);
+            color: var(--bg-dark);
+        }
+
+        /* Efecto de partículas */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--neon-blue);
+            animation: float 20s infinite linear;
+        }
+
+        /* Animaciones */
+        @keyframes scanline {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .users-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .users-table th,
+            .users-table td {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+                padding: 8px 16px;
+                font-size: 0.8rem;
+            }
+        }
     </style>
 </head>
 <body>
-<h1>Gestión de Usuarios</h1>
+<!-- Botón de cambio de tema -->
+<button id="theme-toggle" class="theme-toggle">
+    <span id="theme-icon">🌙</span>
+    <span id="theme-text">Modo Oscuro</span>
+</button>
 
-<% if (users && users.length > 0) { %>
-    <table>
-        <thead>
-        <tr>
-            <th>Usuario</th>
-            <th>Nombre</th>
-            <th>Email</th>
-        </tr>
-        </thead>
-        <tbody>
-        <% users.forEach(user => { %>
-            <tr>
-                <td><%= user.username %></td>
-                <td><%= user.name %></td>
-                <td><%= user.email %></td>
-            </tr>
-        <% }) %>
-        </tbody>
-    </table>
-<% } else { %>
-    <p>No hay usuarios registrados en el sistema.</p>
-<% } %>
+<!-- Efecto de partículas -->
+<div class="particles" id="particles"></div>
+
+<div class="cyber-container">
+    <a href="/" class="back-link">← Volver al inicio</a>
+
+    <div class="page-header">
+        <h1 class="page-title">Gestión de Usuarios</h1>
+        <p class="page-subtitle">Administra los usuarios registrados en MovieWeb</p>
+    </div>
+
+    <% if (users && users.length > 0) { %>
+        <div class="users-table-container">
+            <table class="users-table">
+                <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% users.forEach(user => { %>
+                    <tr>
+                        <td class="user-username"><%= user.username %></td>
+                        <td class="user-name"><%= user.name %></td>
+                        <td class="user-email"><%= user.email %></td>
+                    </tr>
+                <% }) %>
+                </tbody>
+            </table>
+        </div>
+    <% } else { %>
+        <div class="no-users">
+            <h2> No hay usuarios registrados</h2>
+            <p>Actualmente no hay usuarios registrados en el sistema.</p>
+            <a href="/" class="back-link">Volver al inicio</a>
+        </div>
+    <% } %>
+</div>
+
+<script>
+    // Sistema de cambio de tema
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const themeText = document.getElementById('theme-text');
+
+    // Cargar tema guardado
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeButton(savedTheme);
+
+    themeToggle.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeButton(newTheme);
+    });
+
+    function updateThemeButton(theme) {
+        if (theme === 'dark') {
+            themeIcon.textContent = '🌙';
+            themeText.textContent = 'Modo Oscuro';
+        } else {
+            themeIcon.textContent = '☀️';
+            themeText.textContent = 'Modo Claro';
+        }
+    }
+
+    // Efecto de partículas
+    function createParticles() {
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 30;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.animationDelay = Math.random() * 20 + 's';
+            particle.style.animationDuration = (15 + Math.random() * 15) + 's';
+            particlesContainer.appendChild(particle);
+        }
+    }
+
+    // Inicializar efectos
+    document.addEventListener('DOMContentLoaded', function() {
+        createParticles();
+    });
+</script>
 </body>
 </html>

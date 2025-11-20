@@ -4,7 +4,13 @@ class UserController {
     // Listar todos los usuarios
     async listUsers(req, res) {
         try {
-            const users = await userService.getAllUsers();
+            const usersDB = await userService.getAllUsers();
+            const users = usersDB.map(u => ({
+                id: u.user_id,
+                username: u.user_username,
+                name: u.user_name,
+                email: u.user_email
+            }));
             res.render('users/list', { users });
         } catch (error) {
             console.error('Error listando usuarios:', error);

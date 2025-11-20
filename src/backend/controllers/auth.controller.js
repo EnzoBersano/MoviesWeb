@@ -109,8 +109,7 @@ class AuthController {
 
     async verifyToken(req, res) {
         try {
-            // Este endpoint usa el middleware de autenticación
-            // Si llega aquí, el token es válido
+
             res.status(200).json({
                 success: true,
                 message: 'Token válido',

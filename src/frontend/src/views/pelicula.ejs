@@ -1,231 +1,751 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <link rel="stylesheet" href="/css/theme-cyberpunk.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= movie.title %> - MovieWeb</title>
-    <link rel="stylesheet" href="../css/common.css">
-    <link rel="stylesheet" href="../css/movie.css">
+    <link rel="stylesheet" href="/css/theme-cyberpunk.css">
+    <style>
+        .movie-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: transparent;
+            border: 2px solid var(--neon-green);
+            border-radius: 25px;
+            color: var(--neon-green);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .back-button:hover {
+            background: var(--neon-green);
+            color: var(--bg-dark);
+            box-shadow: var(--shadow-green);
+            transform: translateY(-2px);
+        }
+
+        .movie-header {
+            text-align: center;
+            padding: 40px 0;
+            border-bottom: 2px solid var(--neon-pink);
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .movie-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg,
+            transparent,
+            var(--neon-blue),
+            var(--neon-pink),
+            var(--neon-blue),
+            transparent
+            );
+            animation: scanline 3s linear infinite;
+        }
+
+        .movie-title {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, var(--neon-pink), var(--neon-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(255, 0, 255, 0.5);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .movie-tagline {
+            font-size: 1.2rem;
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-card {
+            background: rgba(0, 245, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid var(--neon-blue);
+            transition: var(--transition);
+        }
+
+        .info-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-blue);
+        }
+
+        .info-label {
+            color: var(--neon-blue);
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .info-value {
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--neon-pink);
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 0, 110, 0.5);
+            border-bottom: 1px solid var(--neon-pink);
+            padding-bottom: 10px;
+        }
+
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tag {
+            padding: 8px 16px;
+            background: rgba(0, 245, 255, 0.1);
+            border: 1px solid var(--neon-blue);
+            border-radius: 20px;
+            color: var(--neon-blue);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .tag:hover {
+            background: var(--neon-blue);
+            color: var(--bg-dark);
+            box-shadow: var(--shadow-blue);
+        }
+
+        .cast-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .cast-card {
+            background: var(--bg-card);
+            border: 1px solid var(--neon-purple);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            text-align: center;
+            transition: var(--transition);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .cast-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-purple);
+            border-color: var(--neon-blue);
+        }
+
+        .actor-name {
+            color: var(--text-primary);
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .character-name {
+            color: var(--neon-blue);
+            font-size: 0.8rem;
+        }
+
+        .review-item {
+            background: var(--bg-card);
+            border: 1px solid var(--neon-blue);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: var(--transition);
+        }
+
+        .review-item:hover {
+            box-shadow: var(--shadow-blue);
+            transform: translateX(5px);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .review-author {
+            color: var(--neon-blue);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .review-date {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .review-text {
+            color: var(--text-primary);
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .review-actions {
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .action-btn {
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            margin-left: 5px;
+        }
+
+        .empty-reviews {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            border: 2px dashed var(--neon-pink);
+            border-radius: var(--border-radius);
+        }
+
+        .message {
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .message.success {
+            background: rgba(0, 255, 65, 0.1);
+            color: var(--neon-green);
+            border: 1px solid var(--neon-green);
+        }
+
+        .message.error {
+            background: rgba(255, 0, 51, 0.1);
+            color: var(--neon-red);
+            border: 1px solid var(--neon-red);
+        }
+
+        .message.loading {
+            background: rgba(0, 245, 255, 0.1);
+            color: var(--neon-blue);
+            border: 1px solid var(--neon-blue);
+        }
+
+        @media (max-width: 768px) {
+            .movie-title {
+                font-size: 2rem;
+            }
+
+            .cast-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 15px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
+<!-- Botón de cambio de tema -->
 <button id="theme-toggle" class="theme-toggle">
-    <span id="theme-icon">🌙</span> Tema
+    <span id="theme-icon">🌙</span>
+    <span id="theme-text">Modo Oscuro</span>
 </button>
-<div class="container">
-    <div class="home-link">
-        <a href="/">← Volver al inicio</a>
-    </div>
+
+<!-- Efecto de partículas -->
+<div class="particles" id="particles"></div>
+
+<div class="movie-container">
+    <a href="/" class="back-button">← Volver al inicio</a>
 
     <div class="movie-header">
         <h1 class="movie-title"><%= movie.title %></h1>
         <% if (movie.tagline) { %>
-            <p class="movie-tagline"><%= movie.tagline %></p>
+            <p class="movie-tagline">"<%= movie.tagline %>"</p>
         <% } %>
     </div>
 
-    <div class="movie-info">
-        <!-- Información básica -->
-        <div class="info-section">
-            <h2>Información General</h2>
-            <div class="info-grid">
-                <% if (movie.release_date) { %>
-                    <div class="info-item">
-                        <span class="label">Fecha de estreno:</span>
-                        <span class="value"><%= new Date(movie.release_date).toLocaleDateString('es-ES') %></span>
-                    </div>
-                <% } %>
-                <% if (movie.runtime) { %>
-                    <div class="info-item">
-                        <span class="label">Duración:</span>
-                        <span class="value"><%= movie.runtime %> minutos</span>
-                    </div>
-                <% } %>
-                <% if (movie.vote_average) { %>
-                    <div class="info-item">
-                        <span class="label">Calificación:</span>
-                        <span class="value">⭐ <%= movie.vote_average %>/10 (<%= movie.vote_count %> votos)</span>
-                    </div>
-                <% } %>
-                <% if (movie.movie_status) { %>
-                    <div class="info-item">
-                        <span class="label">Estado:</span>
-                        <span class="value"><%= movie.movie_status %></span>
-                    </div>
-                <% } %>
-                <% if (movie.budget && movie.budget > 0) { %>
-                    <div class="info-item">
-                        <span class="label">Presupuesto:</span>
-                        <span class="value">$<%= movie.budget.toLocaleString() %></span>
-                    </div>
-                <% } %>
-                <% if (movie.revenue && movie.revenue > 0) { %>
-                    <div class="info-item">
-                        <span class="label">Recaudación:</span>
-                        <span class="value">$<%= movie.revenue.toLocaleString() %></span>
-                    </div>
-                <% } %>
+    <!-- Información básica -->
+    <section class="cyber-section">
+        <h2 class="section-title">🎬 INFORMACIÓN GENERAL</h2>
+        <div class="info-grid">
+            <% if (movie.release_date) { %>
+                <div class="info-card">
+                    <div class="info-label">Fecha de estreno</div>
+                    <div class="info-value"><%= new Date(movie.release_date).toLocaleDateString('es-ES') %></div>
+                </div>
+            <% } %>
+            <% if (movie.runtime) { %>
+                <div class="info-card">
+                    <div class="info-label">Duración</div>
+                    <div class="info-value"><%= movie.runtime %> minutos</div>
+                </div>
+            <% } %>
+            <% if (movie.vote_average) { %>
+                <div class="info-card">
+                    <div class="info-label">Calificación</div>
+                    <div class="info-value">⭐ <%= movie.vote_average %>/10 (<%= movie.vote_count %> votos)</div>
+                </div>
+            <% } %>
+            <% if (movie.movie_status) { %>
+                <div class="info-card">
+                    <div class="info-label">Estado</div>
+                    <div class="info-value"><%= movie.movie_status %></div>
+                </div>
+            <% } %>
+            <% if (movie.budget && movie.budget > 0) { %>
+                <div class="info-card">
+                    <div class="info-label">Presupuesto</div>
+                    <div class="info-value">$<%= movie.budget.toLocaleString() %></div>
+                </div>
+            <% } %>
+            <% if (movie.revenue && movie.revenue > 0) { %>
+                <div class="info-card">
+                    <div class="info-label">Recaudación</div>
+                    <div class="info-value">$<%= movie.revenue.toLocaleString() %></div>
+                </div>
+            <% } %>
+        </div>
+    </section>
+
+    <!-- Sinopsis -->
+    <% if (movie.overview) { %>
+        <section class="cyber-section">
+            <h2 class="section-title"> SINOPSIS</h2>
+            <p style="color: var(--text-primary); line-height: 1.6; font-size: 1.1rem; text-align: justify;">
+                <%= movie.overview %>
+            </p>
+        </section>
+    <% } %>
+
+    <!-- Géneros -->
+    <% if (movie.genres && movie.genres.length > 0) { %>
+        <section class="cyber-section">
+            <h2 class="section-title"> GÉNEROS</h2>
+            <div class="tags-container">
+                <% movie.genres.forEach(genre => { %>
+                    <a href="/genre/<%= genre.genre_id %>" class="tag">
+                        <%= genre.genre_name %>
+                    </a>
+                <% }); %>
+            </div>
+        </section>
+    <% } %>
+
+    <!-- Directores -->
+    <% if (movie.directors && movie.directors.length > 0) { %>
+        <section class="cyber-section">
+            <h2 class="section-title">🎬 DIRECCIÓN</h2>
+            <div class="tags-container">
+                <% movie.directors.forEach(director => { %>
+                    <a href="/director/<%= director.crew_member_id %>" class="tag">
+                        <%= director.crew_member_name %>
+                    </a>
+                <% }); %>
+            </div>
+        </section>
+    <% } %>
+
+    <!-- Elenco principal -->
+    <% if (movie.cast && movie.cast.length > 0) { %>
+        <section class="cyber-section">
+            <h2 class="section-title">👥 ELENCO PRINCIPAL</h2>
+            <div class="cast-grid">
+                <% movie.cast.slice(0, 12).forEach(actor => { %>
+                    <a href="/actor/<%= actor.actor_id %>" class="cast-card">
+                        <div style="
+                                width: 60px;
+                                height: 60px;
+                                border-radius: 50%;
+                                background: linear-gradient(45deg, var(--neon-pink), var(--neon-blue));
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                margin: 0 auto 10px;
+                                font-size: 1.5rem;
+                            ">
+                            👤
+                        </div>
+                        <div class="actor-name"><%= actor.actor_name %></div>
+                        <div class="character-name"><%= actor.character_name %></div>
+                    </a>
+                <% }); %>
+            </div>
+        </section>
+    <% } %>
+
+    <!-- Palabras clave -->
+    <% if (movie.keywords && movie.keywords.length > 0) { %>
+        <section class="cyber-section">
+            <h2 class="section-title"> PALABRAS CLAVE</h2>
+            <div class="tags-container">
+                <% movie.keywords.forEach(keyword => { %>
+                    <a href="/keyword/<%= keyword.keyword_id %>/movies?name=<%= encodeURIComponent(keyword.keyword_name) %>" class="tag">
+                        #<%= keyword.keyword_name %>
+                    </a>
+                <% }); %>
+            </div>
+        </section>
+    <% } %>
+
+    <!-- SECCIÓN DE REVIEWS -->
+    <section class="cyber-section">
+        <h2 class="section-title"> RESEÑAS</h2>
+
+        <!-- Formulario para escribir reseña -->
+        <% if (locals.currentUser) { %>
+            <div class="review-form" style="margin-bottom: 30px;">
+                <h3 style="color: var(--neon-blue); margin-bottom: 15px;">Escribe tu reseña</h3>
+                <textarea
+                        id="review-text"
+                        class="cyber-input"
+                        placeholder="Comparte tu opinión sobre esta película..."
+                        rows="5"
+                        style="width: 100%; resize: vertical;"
+                ></textarea>
+                <button
+                        id="submit-review-btn"
+                        class="btn-cyber"
+                        style="margin-top: 15px;"
+                        data-user-id="<%= locals.currentUser.user_id %>"
+                        data-movie-id="<%= movie.movie_id %>"
+                        data-movie-title="<%= movie.title %>"
+                >
+                    PUBLICAR RESEÑA
+                </button>
+                <div id="review-message" class="message"></div>
+            </div>
+        <% } else { %>
+            <div style="text-align: center; padding: 20px; background: var(--bg-card); border-radius: var(--border-radius); border: 1px solid var(--neon-pink);">
+                <p style="color: var(--text-secondary); margin-bottom: 15px;">
+                     Debes iniciar sesión para escribir una reseña
+                </p>
+                <a href="/login" class="btn-cyber">INICIAR SESIÓN</a>
+            </div>
+        <% } %>
+
+        <!-- Lista de reseñas -->
+        <div id="reviews-list">
+            <div class="empty-reviews">
+                <p>Cargando reseñas...</p>
             </div>
         </div>
+    </section>
 
-        <!-- Sinopsis -->
-        <% if (movie.overview) { %>
-            <div class="info-section">
-                <h2>Sinopsis</h2>
-                <p class="overview"><%= movie.overview %></p>
-            </div>
-        <% } %>
+    <!-- Información adicional -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 30px;">
 
-        <!-- Géneros -->
-        <% if (movie.genres && movie.genres.length > 0) { %>
-            <div class="info-section">
-                <h2>Géneros</h2>
-                <div class="tags">
-                    <% movie.genres.forEach(genre => { %>
-                        <span class="tag"><%= genre.genre_name %></span>
-                    <% }); %>
-                </div>
-            </div>
-        <% } %>
-
-        <!-- Directores -->
-        <% if (movie.directors && movie.directors.length > 0) { %>
-            <div class="info-section">
-                <h2>Dirección</h2>
-                <div class="person-list">
-                    <% movie.directors.forEach(director => { %>
-                        <div class="person-item">
-                            <a href="/director/<%= director.crew_member_id %>">
-                                <%= director.crew_member_name %>
-                            </a>
-                        </div>
-                    <% }); %>
-                </div>
-            </div>
-        <% } %>
-
-        <!-- Escritores -->
-        <% if (movie.writers && movie.writers.length > 0) { %>
-            <div class="info-section">
-                <h2>Guión</h2>
-                <div class="person-list">
-                    <% movie.writers.forEach(writer => { %>
-                        <div class="person-item">
-                            <%= writer.crew_member_name %> (<%= writer.job %>)
-                        </div>
-                    <% }); %>
-                </div>
-            </div>
-        <% } %>
-
-        <!-- Elenco -->
-        <% if (movie.cast && movie.cast.length > 0) { %>
-            <div class="info-section">
-                <h2>Elenco Principal</h2>
-                <div class="cast-grid">
-                    <% movie.cast.slice(0, 12).forEach(actor => { %>
-                        <div class="cast-card">
-                            <a href="/actor/<%= actor.actor_id %>">
-                                <p class="actor-name"><%= actor.actor_name %></p>
-                                <p class="character-name"><%= actor.character_name %></p>
-                            </a>
-                        </div>
-                    <% }); %>
-                </div>
-            </div>
-        <% } %>
-
-        <!-- Países de producción -->
+        <!-- Países -->
         <% if (movie.countries && movie.countries.length > 0) { %>
-            <div class="info-section">
-                <h2>Países</h2>
-                <div class="tags">
+            <section class="cyber-section">
+                <h2 class="section-title">PAÍSES</h2>
+                <div class="tags-container">
                     <% movie.countries.forEach(country => { %>
-                        <span class="tag"><%= country.country_name %></span>
+                        <span class="tag">
+                                <%= country.country_name %>
+                            </span>
                     <% }); %>
                 </div>
-            </div>
+            </section>
         <% } %>
 
-        <!-- Compañías productoras -->
+        <!-- Productoras -->
         <% if (movie.companies && movie.companies.length > 0) { %>
-            <div class="info-section">
-                <h2>Productoras</h2>
-                <div class="company-list">
+            <section class="cyber-section">
+                <h2 class="section-title">🏢 PRODUCTORAS</h2>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
                     <% movie.companies.forEach(company => { %>
-                        <div class="company-item"><%= company.company_name %></div>
-                    <% }); %>
-                </div>
-            </div>
-        <% } %>
-
-        <!-- Keywords -->
-        <% if (movie.keywords && movie.keywords.length > 0) { %>
-            <div class="info-section">
-                <h2>Palabras Clave</h2>
-                <div class="keywords-container">
-                    <% movie.keywords.forEach(keyword => { %>
-                        <a href="/keyword/<%= keyword.keyword_id %>/movies?name=<%= encodeURIComponent(keyword.keyword_name) %>" class="keyword-tag">
-                            #<%= keyword.keyword_name %>
-                        </a>
-                    <% }); %>
-                </div>
-            </div>
-        <% } %>
-
-        <!-- Crew adicional -->
-        <% if (movie.crew && movie.crew.length > 0) { %>
-            <div class="info-section">
-                <h2>Equipo Técnico</h2>
-                <div class="crew-list">
-                    <%
-                        const departments = {};
-                        movie.crew.forEach(member => {
-                            if (!departments[member.department_name]) {
-                                departments[member.department_name] = [];
-                            }
-                            departments[member.department_name].push(member);
-                        });
-                    %>
-                    <% Object.keys(departments).forEach(dept => { %>
-                        <div class="crew-department">
-                            <h3><%= dept %></h3>
-                            <ul>
-                                <% departments[dept].slice(0, 5).forEach(member => { %>
-                                    <li><%= member.crew_member_name %> - <%= member.job %></li>
-                                <% }); %>
-                            </ul>
+                        <div style="color: var(--text-primary); font-size: 0.9rem; padding: 8px; background: rgba(0, 245, 255, 0.1); border-radius: 5px;">
+                            • <%= company.company_name %>
                         </div>
                     <% }); %>
                 </div>
-            </div>
-        <% } %>
-
-        <!-- Homepage -->
-        <% if (movie.homepage) { %>
-            <div class="info-section">
-                <a href="<%= movie.homepage %>" target="_blank" class="homepage-link">
-                    Sitio web oficial →
-                </a>
-            </div>
+            </section>
         <% } %>
     </div>
+
+    <!-- Sitio web oficial -->
+    <% if (movie.homepage) { %>
+        <section class="cyber-section" style="text-align: center;">
+            <a href="<%= movie.homepage %>" target="_blank" class="btn-cyber" style="text-decoration: none;">
+                 VISITAR SITIO WEB OFICIAL →
+            </a>
+        </section>
+    <% } %>
 </div>
+
 <script>
-    const themeToggle = document.getElementById('theme-toggle');
-    const themeIcon = document.getElementById('theme-icon');
-    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.addEventListener('DOMContentLoaded', function() {
+        const movieId = '<%= movie.movie_id %>';
+        const currentUser = <%- JSON.stringify(locals.currentUser || {}) %>;
 
-    if (savedTheme === 'light') {
-        document.body.classList.add('light-theme');
-        themeIcon.textContent = '☀️';
-    }
+        // Sistema de cambio de tema
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const themeText = document.getElementById('theme-text');
 
-    themeToggle.addEventListener('click', () => {
-        document.body.classList.toggle('light-theme');
-        const isLight = document.body.classList.contains('light-theme');
-        themeIcon.textContent = isLight ? '☀️' : '🌙';
-        localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeButton(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeButton(newTheme);
+        });
+
+        function updateThemeButton(theme) {
+            if (theme === 'dark') {
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Modo Oscuro';
+            } else {
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Modo Claro';
+            }
+        }
+
+        // Efecto de partículas
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 15) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
+        // Cargar reseñas al iniciar
+        loadReviews();
+
+        // Manejar envío de reseña
+        const submitReviewBtn = document.getElementById('submit-review-btn');
+        if (submitReviewBtn) {
+            submitReviewBtn.addEventListener('click', async function() {
+                const reviewText = document.getElementById('review-text').value.trim();
+                const messageDiv = document.getElementById('review-message');
+
+                if (!reviewText) {
+                    showMessage('Por favor escribe una reseña', 'error');
+                    return;
+                }
+
+                if (!currentUser || !currentUser.user_id) {
+                    showMessage('Debes iniciar sesión para escribir una reseña', 'error');
+                    return;
+                }
+
+                try {
+                    showMessage('Publicando reseña...', 'loading');
+
+                    // 1. Crear la reseña en PostgreSQL
+                    const saveResponse = await fetch('/reviews/create', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            userId: currentUser.user_id,
+                            movieId: movieId,
+                            reviewText: reviewText
+                        })
+                    });
+
+                    const saveData = await saveResponse.json();
+
+                    if (saveData.success) {
+                        // 2. Registrar la actividad en MongoDB
+                        const activityResponse = await fetch('/activity/review', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                userId: currentUser.user_id,
+                                movieId: movieId,
+                                movieTitle: '<%= movie.title %>',
+                                reviewId: saveData.reviewId
+                            })
+                        });
+
+                        const activityData = await activityResponse.json();
+
+                        if (activityData.success) {
+                            showMessage(' Reseña publicada exitosamente', 'success');
+                            document.getElementById('review-text').value = '';
+                            loadReviews(); // Recargar la lista de reseñas
+                        } else {
+                            showMessage('Error al registrar la actividad', 'error');
+                        }
+                    } else {
+                        showMessage(saveData.message || 'Error al publicar la reseña', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showMessage('Error de conexión', 'error');
+                }
+            });
+        }
+
+        // Función para cargar reseñas
+        async function loadReviews() {
+            try {
+                const response = await fetch(`/reviews/movie/${movieId}`);
+                const data = await response.json();
+
+                const reviewsList = document.getElementById('reviews-list');
+
+                if (data.success && data.reviews.length > 0) {
+                    reviewsList.innerHTML = data.reviews.map(review => `
+                            <div class="review-item">
+                                <div class="review-header">
+                                    <div class="review-author">${review.user_name || 'Usuario'}</div>
+                                    <div class="review-date">${new Date(review.created_at).toLocaleDateString('es-ES')}</div>
+                                </div>
+                                <div class="review-text">${review.review_text}</div>
+                                ${currentUser && currentUser.user_id === review.user_id ? `
+                                    <div class="review-actions">
+                                        <button onclick="editReview('${review.review_id}')" class="btn-cyber action-btn">
+                                            Editar
+                                        </button>
+                                        <button onclick="deleteReview('${review.review_id}')" class="btn-cyber action-btn" style="background: var(--neon-red);">
+                                            Eliminar
+                                        </button>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `).join('');
+                } else {
+                    reviewsList.innerHTML = `
+                            <div class="empty-reviews">
+                                <p> Aún no hay reseñas para esta película</p>
+                                <p>Sé el primero en escribir una reseña</p>
+                            </div>
+                        `;
+                }
+            } catch (error) {
+                console.error('Error cargando reseñas:', error);
+                document.getElementById('reviews-list').innerHTML = `
+                        <div class="empty-reviews" style="border-color: var(--neon-red);">
+                            <p style="color: var(--neon-red);"> Error al cargar las reseñas</p>
+                        </div>
+                    `;
+            }
+        }
+
+        // Función para mostrar mensajes
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('review-message');
+            messageDiv.textContent = message;
+            messageDiv.className = 'message';
+
+            switch(type) {
+                case 'success':
+                    messageDiv.classList.add('success');
+                    break;
+                case 'error':
+                    messageDiv.classList.add('error');
+                    break;
+                case 'loading':
+                    messageDiv.classList.add('loading');
+                    break;
+            }
+        }
+
+        // Funciones globales para editar/eliminar
+        window.editReview = function(reviewId) {
+            // Implementar edición de reseña
+            const newText = prompt('Edita tu reseña:');
+            if (newText !== null && newText.trim() !== '') {
+                fetch(`/reviews/${reviewId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        reviewText: newText.trim()
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showMessage('Reseña actualizada', 'success');
+                            loadReviews();
+                        } else {
+                            showMessage('Error al actualizar la reseña', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        showMessage('Error de conexión', 'error');
+                    });
+            }
+        };
+
+        window.deleteReview = async function(reviewId) {
+            if (confirm('¿Estás seguro de que quieres eliminar esta reseña?')) {
+                try {
+                    const response = await fetch(`/reviews/${reviewId}`, {
+                        method: 'DELETE'
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        showMessage('Reseña eliminada', 'success');
+                        loadReviews();
+                    } else {
+                        showMessage('Error al eliminar la reseña', 'error');
+                    }
+                } catch (error) {
+                    showMessage('Error de conexión', 'error');
+                }
+            }
+        };
     });
 </script>
 </body>

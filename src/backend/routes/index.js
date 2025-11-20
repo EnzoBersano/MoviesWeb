@@ -94,7 +94,7 @@ router.get('/activity/feed', activityController.viewActivityFeed.bind(activityCo
 // ============================================
 
 // Lista de usuarios (pública)
-//router.get('/users', userController.listUsers.bind(userController));
+router.get('/users', userController.listUsers.bind(userController));
 
 // RUTAS ESPECÍFICAS DE USUARIO (deben ir ANTES de la ruta general /users/:id)
 router.get('/users/create', authMiddleware.requireAuth, userController.showCreateForm.bind(userController));
