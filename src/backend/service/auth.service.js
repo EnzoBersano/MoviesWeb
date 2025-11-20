@@ -2,13 +2,12 @@ const authRepository = require('../repository/auth.repository');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret';
 const JWT_EXPIRES_IN = '24h';
 
 class AuthService {
     async registerUser(userData) {
         try {
-            // Verificar si el usuario ya existe
             const existingUser = await authRepository.findUserByEmail(userData.email);
             if (existingUser) {
                 throw new Error('El email ya existe');
@@ -19,10 +18,8 @@ class AuthService {
                 throw new Error('El username ya existe');
             }
 
-            // Hashear la contraseña
             const hashedPassword = await bcrypt.hash(userData.password, 10);
 
-            // Crear el usuario
             const newUser = await authRepository.createUser({
                 username: userData.username,
                 email: userData.email,
@@ -30,7 +27,6 @@ class AuthService {
                 name: userData.name
             });
 
-            // Generar token
             const token = this.generateToken({
                 userId: newUser.user_id,
                 username: newUser.user_username,
@@ -53,21 +49,18 @@ class AuthService {
 
     async loginUser(email, password) {
         try {
-            // Buscar usuario por email
             const user = await authRepository.findUserByEmail(email);
 
             if (!user) {
                 throw new Error('Credenciales inválidas');
             }
 
-            // Verificar contraseña
             const isPasswordValid = await bcrypt.compare(password, user.user_password);
 
             if (!isPasswordValid) {
                 throw new Error('Credenciales inválidas');
             }
 
-            // Generar token
             const token = this.generateToken({
                 userId: user.user_id,
                 username: user.user_username,

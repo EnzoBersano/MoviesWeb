@@ -153,6 +153,25 @@ class UserController {
             res.status(500).send('Error al eliminar película.');
         }
     }
+    async viewUserMovies(req, res) {
+        try {
+            const userId = parseInt(req.params.id);
+
+            if (isNaN(userId)) {
+                return res.status(400).send('ID de usuario inválido');
+            }
+
+            console.log('=== CARGANDO PELÍCULAS DEL USUARIO ===');
+            console.log('ID del usuario:', userId);
+
+            const data = await userService.getUserWithMovies(userId);
+
+            res.render('users/movies', data);
+        } catch (error) {
+            console.error('Error cargando películas del usuario:', error);
+            res.status(404).send('Usuario no encontrado: ' + error.message);
+        }
+    }
 }
 
 module.exports = new UserController();

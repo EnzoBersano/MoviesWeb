@@ -158,6 +158,20 @@ class ActivityService {
             throw error;
         }
     }
+    static async getRecentActivities(limit = 50, skip = 0) {
+        try {
+            const activities = await activityRepository.findAll({
+                limit: limit,
+                skip: skip,
+                sort: { timestamp: -1 }
+            });
+            return activities;
+        } catch (error) {
+            console.error('Error al obtener actividades recientes:', error);
+            throw error;
+        }
+    }
+
 }
 
 module.exports = ActivityService;

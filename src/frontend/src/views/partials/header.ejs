@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof title !== 'undefined' ? title : 'MovieWeb' %></title>
+    <link rel="stylesheet" href="/css/theme-cyberpunk.css">
+    <%- typeof additionalStyles !== 'undefined' ? additionalStyles : '' %>
+</head>
+<body>
+<!-- Botón de cambio de tema -->
+<button id="theme-toggle" class="theme-toggle">
+    <span id="theme-icon">🌙</span>
+    <span id="theme-text">Modo Oscuro</span>
+</button>
+
+<!-- Efecto de partículas -->
+<div class="particles" id="particles"></div>
+
+<div class="cyber-container">

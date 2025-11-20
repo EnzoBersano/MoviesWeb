@@ -1,55 +1,47 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Iniciar sesión</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-            display: flex;
-            justify-content: center;
-        }
-        .container {
-            width: 350px;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-        }
-        input {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-        }
-        button {
-            width: 100%;
-            margin-top: 15px;
-            padding: 10px;
-            cursor: pointer;
-        }
-        .link {
-            margin-top: 15px;
-            text-align: center;
-        }
-    </style>
-</head>
-<body>
+<%- include('partials/header', {
+title: 'Iniciar Sesión - MovieWeb'
+}) %>
 
-<div class="container">
-    <h2>Iniciar sesión</h2>
+<div class="cyber-container">
+    <header class="cyber-header">
+        <h1 class="main-title">INICIAR SESIÓN</h1>
+        <p class="subtitle">Accede a tu cuenta MovieWeb</p>
+    </header>
 
-    <form action="/login" method="POST">
-        <input type="email" name="email" placeholder="Correo electrónico" required>
+    <section class="cyber-section" style="max-width: 400px; margin: 0 auto;">
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div style="background: rgba(255, 0, 51, 0.2); border: 1px solid var(--neon-red); padding: 15px; border-radius: var(--border-radius); margin-bottom: 20px;">
+                <p style="color: var(--neon-red); margin: 0; text-align: center;"><%= error %></p>
+            </div>
+        <% } %>
 
-        <input type="password" name="password" placeholder="Contraseña" required>
+        <% if (typeof success !== 'undefined' && success) { %>
+            <div style="background: rgba(0, 255, 65, 0.2); border: 1px solid var(--neon-green); padding: 15px; border-radius: var(--border-radius); margin-bottom: 20px;">
+                <p style="color: var(--neon-green); margin: 0; text-align: center;"><%= success %></p>
+            </div>
+        <% } %>
 
-        <button type="submit">Entrar</button>
-    </form>
+        <form action="/login" method="POST">
+            <div style="margin-bottom: 20px;">
+                <input type="email" name="email" class="cyber-input" placeholder="Correo electrónico" required>
+            </div>
 
-    <div class="link">
-        <a href="/register">¿No tienes cuenta? Crear cuenta</a>
-    </div>
+            <div style="margin-bottom: 20px;">
+                <input type="password" name="password" class="cyber-input" placeholder="Contraseña" required>
+            </div>
+
+            <button type="submit" class="btn-cyber" style="width: 100%;">ENTRAR</button>
+        </form>
+
+        <div style="text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+            <p style="color: var(--text-secondary); margin-bottom: 15px;">
+                ¿No tienes cuenta?
+            </p>
+            <a href="/register" class="btn-cyber btn-cyber-secondary" style="display: block; text-decoration: none;">
+                CREAR CUENTA
+            </a>
+        </div>
+    </section>
 </div>
 
-</body>
-</html>
+<%- include('partials/footer') %>

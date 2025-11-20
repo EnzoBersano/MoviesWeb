@@ -1,5 +1,4 @@
-/* src/frontend/src/css/theme-cyberpunk.css - NUEVA CLASE */
-/* Tema Neon Cyberpunk para MovieWeb */
+/* src/css/theme-cyberpunk.css - TEMA CYBERPUNK GLOBAL */
 
 :root {
     /* Colores Neon Cyberpunk */
@@ -8,6 +7,7 @@
     --neon-purple: #bf00ff;
     --neon-green: #00ff41;
     --neon-yellow: #ffea00;
+    --neon-red: #ff0033;
 
     /* Fondos */
     --bg-dark: #0a0e27;
@@ -24,19 +24,15 @@
     --shadow-pink: 0 0 20px rgba(255, 0, 110, 0.5);
     --shadow-blue: 0 0 20px rgba(0, 245, 255, 0.5);
     --shadow-purple: 0 0 20px rgba(191, 0, 255, 0.5);
+    --shadow-green: 0 0 20px rgba(0, 255, 65, 0.5);
 
-    /* Tema claro (por defecto oscuro) */
-    --primary-color: var(--neon-blue);
-    --secondary-color: var(--neon-pink);
-    --background: var(--bg-dark);
-    --card-background: var(--bg-card);
-    --border-color: var(--neon-purple);
+    /* Utilidades */
     --border-radius: 12px;
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Tema Claro */
-body.light-theme {
+[data-theme="light"] {
     --bg-dark: #f0f4ff;
     --bg-darker: #e8ecf7;
     --bg-card: #ffffff;
@@ -47,11 +43,15 @@ body.light-theme {
     --neon-pink: #e91e63;
     --neon-blue: #2196f3;
     --neon-purple: #9c27b0;
+    --neon-green: #00c853;
+    --neon-yellow: #ffd600;
     --shadow-pink: 0 2px 8px rgba(233, 30, 99, 0.2);
     --shadow-blue: 0 2px 8px rgba(33, 150, 243, 0.2);
     --shadow-purple: 0 2px 8px rgba(156, 39, 176, 0.2);
+    --shadow-green: 0 2px 8px rgba(0, 200, 83, 0.2);
 }
 
+/* Reset y base */
 * {
     margin: 0;
     padding: 0;
@@ -65,9 +65,21 @@ body {
     line-height: 1.6;
     min-height: 100vh;
     transition: var(--transition);
+    background-image:
+            linear-gradient(rgba(0, 245, 255, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 245, 255, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
 }
 
-/* Botón de tema */
+/* Contenedor principal */
+.cyber-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+}
+
+/* Botón de tema global */
 .theme-toggle {
     position: fixed;
     top: 20px;
@@ -75,30 +87,320 @@ body {
     z-index: 1000;
     background: var(--bg-card);
     border: 2px solid var(--neon-purple);
-    padding: 12px 24px;
+    padding: 12px 20px;
     border-radius: 50px;
     color: var(--text-primary);
     cursor: pointer;
     font-weight: 600;
     box-shadow: var(--shadow-purple);
     transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: inherit;
+    backdrop-filter: blur(10px);
 }
 
 .theme-toggle:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-purple), 0 5px 15px rgba(0, 0, 0, 0.3);
+    background: var(--neon-purple);
+    color: var(--bg-dark);
 }
 
-/* Efectos de glow en textos importantes */
-.glow-text {
-    text-shadow: 0 0 10px var(--neon-blue),
-    0 0 20px var(--neon-blue),
-    0 0 30px var(--neon-blue);
+/* Header cyberpunk */
+.cyber-header {
+    text-align: center;
+    padding: 40px 0;
+    border-bottom: 2px solid var(--neon-pink);
+    margin-bottom: 40px;
+    position: relative;
 }
 
-.glow-pink {
-    text-shadow: 0 0 10px var(--neon-pink),
-    0 0 20px var(--neon-pink);
+.cyber-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg,
+    transparent,
+    var(--neon-blue),
+    var(--neon-pink),
+    var(--neon-blue),
+    transparent
+    );
+    animation: scanline 3s linear infinite;
+}
+
+.main-title {
+    font-size: 4rem;
+    font-weight: bold;
+    background: linear-gradient(45deg, var(--neon-pink), var(--neon-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 30px rgba(255, 0, 255, 0.5);
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: var(--neon-blue);
+    text-shadow: 0 0 10px var(--neon-blue);
+    margin-bottom: 30px;
+}
+
+/* Secciones con estilo cyberpunk */
+.cyber-section {
+    background: var(--bg-card);
+    border: 1px solid var(--neon-blue);
+    padding: 30px;
+    margin-bottom: 40px;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 245, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border-radius: var(--border-radius);
+}
+
+.cyber-section::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, var(--neon-pink), var(--neon-blue), var(--neon-green));
+    z-index: -1;
+    animation: borderGlow 2s ease-in-out infinite alternate;
+    border-radius: var(--border-radius);
+}
+
+/* Botones cyberpunk */
+.btn-cyber {
+    padding: 15px 30px;
+    background: linear-gradient(45deg, var(--neon-pink), var(--neon-blue));
+    border: none;
+    color: #000;
+    font-family: inherit;
+    font-weight: bold;
+    cursor: pointer;
+    transition: var(--transition);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    border-radius: 25px;
+}
+
+.btn-cyber:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 0, 255, 0.4);
+}
+
+.btn-cyber-secondary {
+    background: linear-gradient(45deg, var(--neon-green), var(--neon-blue));
+}
+
+.btn-cyber-danger {
+    background: linear-gradient(45deg, var(--neon-red), var(--neon-pink));
+}
+
+/* Formularios */
+.cyber-input {
+    padding: 15px 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--neon-pink);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+    transition: var(--transition);
+    border-radius: 5px;
+    width: 100%;
+}
+
+[data-theme="light"] .cyber-input {
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+}
+
+.cyber-input:focus {
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 15px rgba(0, 245, 255, 0.5);
+}
+
+.cyber-input::placeholder {
+    color: var(--text-secondary);
+}
+
+/* Tarjetas de navegación */
+.nav-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.nav-card {
+    background: var(--bg-card);
+    border: 1px solid var(--neon-green);
+    padding: 30px;
+    text-align: center;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    border-radius: var(--border-radius);
+}
+
+.nav-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.nav-card:hover::before {
+    left: 100%;
+}
+
+.nav-card:hover {
+    border-color: var(--neon-blue);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 245, 255, 0.3);
+}
+
+.nav-icon {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.nav-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: var(--neon-green);
+}
+
+.nav-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+/* Grid de géneros/tarjetas */
+.genres-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.genre-card {
+    background: var(--bg-card);
+    border: 1px solid var(--neon-blue);
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: var(--transition);
+    backdrop-filter: blur(10px);
+    border-radius: var(--border-radius);
+}
+
+.genre-card:hover {
+    background: rgba(0, 245, 255, 0.1);
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
+}
+
+.genre-name {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--neon-blue);
+}
+
+/* Footer */
+.cyber-footer {
+    text-align: center;
+    padding: 30px 0;
+    border-top: 1px solid var(--neon-pink);
+    margin-top: 40px;
+    color: var(--text-secondary);
+}
+
+/* Utilidades */
+.text-glow {
+    text-shadow: 0 0 10px currentColor;
+}
+
+.glow-pink { color: var(--neon-pink); }
+.glow-blue { color: var(--neon-blue); }
+.glow-green { color: var(--neon-green); }
+
+.section-title {
+    font-size: 2rem;
+    color: var(--neon-pink);
+    margin-bottom: 20px;
+    text-align: center;
+    text-shadow: 0 0 10px rgba(255, 0, 110, 0.5);
+}
+
+/* Animaciones */
+@keyframes scanline {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+@keyframes borderGlow {
+    0% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(100vh) translateX(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100vh) translateX(100px);
+        opacity: 0;
+    }
+}
+
+/* Efectos de partículas */
+.particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--neon-blue);
+    animation: float 20s infinite linear;
 }
 
 /* Scrollbar personalizada */
@@ -121,213 +423,32 @@ body {
     background: linear-gradient(180deg, var(--neon-pink), var(--neon-purple));
 }
 
-/* Animaciones */
-@keyframes neonPulse {
-    0%, 100% {
-        box-shadow: 0 0 5px var(--neon-blue),
-        0 0 10px var(--neon-blue);
-    }
-    50% {
-        box-shadow: 0 0 10px var(--neon-blue),
-        0 0 20px var(--neon-blue),
-        0 0 30px var(--neon-blue);
-    }
-}
-
-@keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.animate-slide-in {
-    animation: slideInUp 0.6s ease-out;
-}
-
-/* Grid de películas estilo TMDB */
-.movies-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 20px;
-    padding: 20px 0;
-}
-
-/* Tarjeta de película */
-.movie-card {
-    background: var(--bg-card);
-    border-radius: var(--border-radius);
-    overflow: hidden;
-    transition: var(--transition);
-    border: 1px solid transparent;
-    position: relative;
-}
-
-.movie-card:hover {
-    transform: translateY(-8px);
-    border-color: var(--neon-purple);
-    box-shadow: var(--shadow-purple), 0 10px 30px rgba(0, 0, 0, 0.5);
-}
-
-.movie-card img {
-    width: 100%;
-    height: auto;
-    display: block;
-    aspect-ratio: 2/3;
-    object-fit: cover;
-}
-
-.movie-card-info {
-    padding: 15px;
-}
-
-.movie-card-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 8px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-}
-
-.movie-card-rating {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    color: var(--neon-yellow);
-    font-weight: 600;
-}
-
-/* Content row (fila horizontal con scroll) */
-.content-row {
-    margin-bottom: 50px;
-}
-
-.content-row-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.content-row-title {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.content-row-title:hover {
-    color: var(--neon-pink);
-    text-shadow: var(--shadow-pink);
-}
-
-.view-all-link {
-    color: var(--neon-blue);
-    text-decoration: none;
-    font-weight: 600;
-    padding: 8px 16px;
-    border: 2px solid var(--neon-blue);
-    border-radius: 25px;
-    transition: var(--transition);
-}
-
-.view-all-link:hover {
-    background: var(--neon-blue);
-    color: var(--bg-dark);
-    box-shadow: var(--shadow-blue);
-}
-
-.content-row-container {
-    position: relative;
-}
-
-.content-row-scroll {
-    display: flex;
-    gap: 15px;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    padding: 10px 0;
-    scrollbar-width: thin;
-    scrollbar-color: var(--neon-purple) var(--bg-darker);
-}
-
-.content-row-scroll::-webkit-scrollbar {
-    height: 8px;
-}
-
-.content-row-item {
-    flex: 0 0 auto;
-    width: 200px;
-}
-
-/* Botones de navegación del scroll */
-.scroll-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: var(--bg-card);
-    border: 2px solid var(--neon-purple);
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 10;
-    transition: var(--transition);
-    color: var(--text-primary);
-    font-size: 1.5rem;
-}
-
-.scroll-btn:hover {
-    background: var(--neon-purple);
-    box-shadow: var(--shadow-purple);
-    transform: translateY(-50%) scale(1.1);
-}
-
-.scroll-btn-left {
-    left: -25px;
-}
-
-.scroll-btn-right {
-    right: -25px;
-}
-
 /* Responsive */
-@media (max-width: 1400px) {
-    .movies-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
-}
-
-@media (max-width: 1024px) {
-    .movies-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
 @media (max-width: 768px) {
-    .movies-grid {
-        grid-template-columns: repeat(2, 1fr);
+    .main-title {
+        font-size: 2.5rem;
     }
 
-    .content-row-item {
-        width: 150px;
+    .cyber-container {
+        padding: 10px;
     }
-}
 
-@media (max-width: 480px) {
-    .movies-grid {
+    .nav-grid {
         grid-template-columns: 1fr;
+    }
+
+    .genres-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+
+    .theme-toggle {
+        top: 10px;
+        right: 10px;
+        padding: 8px 16px;
+        font-size: 0.8rem;
+    }
+
+    .cyber-section {
+        padding: 20px;
     }
 }

@@ -57,6 +57,14 @@ class AuthController {
                 secure: false,
                 maxAge: 24 * 60 * 60 * 1000
             });
+
+            res.cookie("user_id", result.user.user_id, {
+                httpOnly: false, // Para que EJS pueda acceder
+                secure: process.env.NODE_ENV === 'production',
+                maxAge: 24 * 60 * 60 * 1000,
+                sameSite: 'strict'
+            });
+
             return res.redirect('/activity/feed');
         } catch (error) {
             console.error('Error en login:', error);
@@ -72,6 +80,30 @@ class AuthController {
                 success: false,
                 message: 'Error al iniciar sesión'
             });
+        }
+    }
+    async logout(req, res) {
+        try {
+            // Limpiar ambas cookies
+            res.clearCookie("token", {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict'
+            });
+
+            res.clearCookie("user_id", {
+                httpOnly: false,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict'
+            });
+
+            // Redirigir al login con mensaje de éxito
+            res.redirect('/login?logout=success');
+
+        } catch (error) {
+            console.error('Error en logout:', error);
+            // Aún así redirigir al login en caso de error
+            res.redirect('/login');
         }
     }
 
@@ -110,6 +142,23 @@ class AuthController {
             res.status(500).json({
                 success: false,
                 message: 'Error al renovar token'
+            });
+        }
+    }
+    async getCurrentUser(req, res) {
+        try {
+            // El middleware de auth ya debería haber inyectado req.user
+            res.status(200).json({
+                success: true,
+                data: {
+                    user: req.user
+                }
+            });
+        } catch (error) {
+            console.error('Error obteniendo usuario actual:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error al obtener usuario actual'
             });
         }
     }

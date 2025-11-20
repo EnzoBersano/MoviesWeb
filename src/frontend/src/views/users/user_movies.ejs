@@ -1,0 +1,75 @@
+<%- include('partials/header', {
+title: 'Películas de ' + user.user_name + ' - MovieWeb'
+}) %>
+
+<div class="cyber-container">
+    <header class="cyber-header">
+        <h1 class="main-title">PELÍCULAS DE <%= user.user_name.toUpperCase() %></h1>
+        <p class="subtitle">@<%= user.user_username %> - Colección personal</p>
+    </header>
+
+    <section class="cyber-section">
+        <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;">
+            <h2 class="section-title">COLECCIÓN (<%= movies.length %> PELÍCULAS)</h2>
+            <a href="/users/<%= user.user_id %>/profile" class="btn-cyber">VER PERFIL COMPLETO</a>
+        </div>
+
+        <% if (movies.length === 0) { %>
+            <div style="text-align: center; padding: 60px 20px; color: var(--text-secondary);">
+                <p style="font-size: 1.1rem;">Este usuario aún no ha agregado películas a su colección.</p>
+            </div>
+        <% } else { %>
+            <div class="movies-grid">
+                <% movies.forEach(movie => { %>
+                    <div class="movie-card">
+                        <a href="/pelicula/<%= movie.movie_id %>" style="text-decoration: none;">
+                            <% if (movie.poster_url) { %>
+                                <img src="<%= movie.poster_url %>" alt="<%= movie.title %>" loading="lazy">
+                            <% } else { %>
+                                <div class="poster-placeholder">🎬</div>
+                            <% } %>
+                            <div class="movie-card-info">
+                                <div class="movie-card-title"><%= movie.title %></div>
+
+                                <% if (movie.rating) { %>
+                                    <div style="color: var(--neon-yellow); font-weight: bold; margin: 8px 0;">
+                                        ⭐ <%= movie.rating %>/10
+                                    </div>
+                                <% } %>
+
+                                <% if (movie.opinion) { %>
+                                    <div style="
+                                        background: rgba(0, 245, 255, 0.1);
+                                        padding: 12px;
+                                        border-radius: 8px;
+                                        margin-top: 10px;
+                                        border-left: 3px solid var(--neon-blue);
+                                    ">
+                                        <p style="color: var(--text-secondary); font-style: italic; margin: 0; font-size: 0.9rem; line-height: 1.3;">
+                                            "<%= movie.opinion.length > 100 ? movie.opinion.substring(0, 100) + '...' : movie.opinion %>"
+                                        </p>
+                                    </div>
+                                <% } %>
+
+                                <div style="
+                                    display: flex;
+                                    justify-content: space-between;
+                                    align-items: center;
+                                    margin-top: 15px;
+                                    padding-top: 15px;
+                                    border-top: 1px solid var(--border-color);
+                                    color: var(--text-muted);
+                                    font-size: 0.8rem;
+                                ">
+                                    <span>Agregada: <%= new Date(movie.created_at).toLocaleDateString('es-ES') %></span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                <% }) %>
+            </div>
+        <% } %>
+    </section>
+</div>
+
+<%- include('partials/footer') %>

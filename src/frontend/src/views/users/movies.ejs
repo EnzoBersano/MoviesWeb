@@ -1,0 +1,203 @@
+<%- include('partials/header', {
+title: movie.title + ' - MovieWeb'
+}) %>
+
+<div class="cyber-container">
+    <!-- Botón volver -->
+    <a href="/" class="btn-cyber" style="text-decoration: none; display: inline-block; margin-bottom: 30px;">
+        ← VOLVER AL INICIO
+    </a>
+
+    <!-- Header de la película -->
+    <header class="cyber-header">
+        <h1 class="main-title"><%= movie.title.toUpperCase() %></h1>
+        <% if (movie.tagline) { %>
+            <p class="subtitle" style="font-style: italic;">"<%= movie.tagline %>"</p>
+        <% } %>
+    </header>
+
+    <!-- Información principal en secciones cyberpunk -->
+    <div style="display: grid; gap: 30px;">
+
+        <!-- Información básica -->
+        <section class="cyber-section">
+            <h2 class="section-title">🎬 INFORMACIÓN GENERAL</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                <% if (movie.release_date) { %>
+                    <div style="background: rgba(0, 245, 255, 0.1); padding: 15px; border-radius: 8px; border-left: 3px solid var(--neon-blue);">
+                        <div style="color: var(--neon-blue); font-weight: bold; font-size: 0.9rem;">FECHA DE ESTRENO</div>
+                        <div style="color: var(--text-primary);"><%= new Date(movie.release_date).toLocaleDateString('es-ES') %></div>
+                    </div>
+                <% } %>
+                <% if (movie.runtime) { %>
+                    <div style="background: rgba(255, 0, 110, 0.1); padding: 15px; border-radius: 8px; border-left: 3px solid var(--neon-pink);">
+                        <div style="color: var(--neon-pink); font-weight: bold; font-size: 0.9rem;">DURACIÓN</div>
+                        <div style="color: var(--text-primary);"><%= movie.runtime %> minutos</div>
+                    </div>
+                <% } %>
+                <% if (movie.vote_average) { %>
+                    <div style="background: rgba(255, 234, 0, 0.1); padding: 15px; border-radius: 8px; border-left: 3px solid var(--neon-yellow);">
+                        <div style="color: var(--neon-yellow); font-weight: bold; font-size: 0.9rem;">CALIFICACIÓN</div>
+                        <div style="color: var(--text-primary);"> <%= movie.vote_average %>/10 (<%= movie.vote_count %> votos)</div>
+                    </div>
+                <% } %>
+                <% if (movie.movie_status) { %>
+                    <div style="background: rgba(0, 255, 65, 0.1); padding: 15px; border-radius: 8px; border-left: 3px solid var(--neon-green);">
+                        <div style="color: var(--neon-green); font-weight: bold; font-size: 0.9rem;">ESTADO</div>
+                        <div style="color: var(--text-primary);"><%= movie.movie_status %></div>
+                    </div>
+                <% } %>
+            </div>
+        </section>
+
+        <!-- Sinopsis -->
+        <% if (movie.overview) { %>
+            <section class="cyber-section">
+                <h2 class="section-title"> SINOPSIS</h2>
+                <p style="color: var(--text-primary); line-height: 1.6; font-size: 1.1rem; text-align: justify;">
+                    <%= movie.overview %>
+                </p>
+            </section>
+        <% } %>
+
+        <!-- Géneros -->
+        <% if (movie.genres && movie.genres.length > 0) { %>
+            <section class="cyber-section">
+                <h2 class="section-title">GÉNEROS</h2>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    <% movie.genres.forEach(genre => { %>
+                        <a href="/genre/<%= genre.genre_id %>" class="btn-cyber" style="padding: 8px 16px; font-size: 0.9rem; text-decoration: none;">
+                            <%= genre.genre_name %>
+                        </a>
+                    <% }); %>
+                </div>
+            </section>
+        <% } %>
+
+        <!-- Directores -->
+        <% if (movie.directors && movie.directors.length > 0) { %>
+            <section class="cyber-section">
+                <h2 class="section-title"> DIRECCIÓN</h2>
+                <div style="display: flex; flex-wrap: wrap; gap: 15px;">
+                    <% movie.directors.forEach(director => { %>
+                        <a href="/director/<%= director.crew_member_id %>"
+                           class="btn-cyber btn-cyber-secondary"
+                           style="padding: 10px 20px; text-decoration: none; font-size: 0.9rem;">
+                             <%= director.crew_member_name %>
+                        </a>
+                    <% }); %>
+                </div>
+            </section>
+        <% } %>
+
+        <!-- Elenco principal -->
+        <% if (movie.cast && movie.cast.length > 0) { %>
+            <section class="cyber-section">
+                <h2 class="section-title"> ELENCO PRINCIPAL</h2>
+                <div class="movies-grid">
+                    <% movie.cast.slice(0, 12).forEach(actor => { %>
+                        <div class="movie-card" style="text-align: center;">
+                            <a href="/actor/<%= actor.actor_id %>" style="text-decoration: none;">
+                                <div style="
+                                    width: 80px;
+                                    height: 80px;
+                                    border-radius: 50%;
+                                    background: linear-gradient(45deg, var(--neon-pink), var(--neon-blue));
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    margin: 0 auto 15px;
+                                    font-size: 2rem;
+                                ">
+
+                                </div>
+                                <div style="color: var(--text-primary); font-weight: bold; margin-bottom: 5px;">
+                                    <%= actor.actor_name %>
+                                </div>
+                                <div style="color: var(--neon-blue); font-size: 0.8rem;">
+                                    <%= actor.character_name %>
+                                </div>
+                            </a>
+                        </div>
+                    <% }); %>
+                </div>
+            </section>
+        <% } %>
+
+        <!-- Palabras clave -->
+        <% if (movie.keywords && movie.keywords.length > 0) { %>
+            <section class="cyber-section">
+                <h2 class="section-title">PALABRAS CLAVE</h2>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <% movie.keywords.forEach(keyword => { %>
+                        <a href="/keyword/<%= keyword.keyword_id %>/movies?name=<%= encodeURIComponent(keyword.keyword_name) %>"
+                           style="
+                                padding: 6px 12px;
+                                background: rgba(191, 0, 255, 0.2);
+                                border: 1px solid var(--neon-purple);
+                                border-radius: 15px;
+                                color: var(--neon-purple);
+                                text-decoration: none;
+                                font-size: 0.8rem;
+                                transition: var(--transition);
+                            "
+                           onmouseover="this.style.background='var(--neon-purple)'; this.style.color='var(--bg-dark)';"
+                           onmouseout="this.style.background='rgba(191, 0, 255, 0.2)'; this.style.color='var(--neon-purple)';">
+                            #<%= keyword.keyword_name %>
+                        </a>
+                    <% }); %>
+                </div>
+            </section>
+        <% } %>
+
+        <!-- Información adicional -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+
+            <!-- Países -->
+            <% if (movie.countries && movie.countries.length > 0) { %>
+                <section class="cyber-section">
+                    <h2 class="section-title">🌎 PAÍSES</h2>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        <% movie.countries.forEach(country => { %>
+                            <span style="
+                                padding: 5px 10px;
+                                background: rgba(0, 245, 255, 0.1);
+                                border: 1px solid var(--neon-blue);
+                                border-radius: 12px;
+                                color: var(--neon-blue);
+                                font-size: 0.8rem;
+                            ">
+                                <%= country.country_name %>
+                            </span>
+                        <% }); %>
+                    </div>
+                </section>
+            <% } %>
+
+            <!-- Productoras -->
+            <% if (movie.companies && movie.companies.length > 0) { %>
+                <section class="cyber-section">
+                    <h2 class="section-title"> PRODUCTORAS</h2>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <% movie.companies.forEach(company => { %>
+                            <div style="color: var(--text-primary); font-size: 0.9rem;">
+                                • <%= company.company_name %>
+                            </div>
+                        <% }); %>
+                    </div>
+                </section>
+            <% } %>
+        </div>
+
+        <!-- Sitio web oficial -->
+        <% if (movie.homepage) { %>
+            <section class="cyber-section" style="text-align: center;">
+                <a href="<%= movie.homepage %>" target="_blank" class="btn-cyber" style="text-decoration: none;">
+                     VISITAR SITIO WEB OFICIAL →
+                </a>
+            </section>
+        <% } %>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

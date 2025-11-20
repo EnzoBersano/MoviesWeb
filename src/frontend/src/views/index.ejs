@@ -1,271 +1,109 @@
-<!-- src/frontend/src/views/index.ejs - ACTUALIZAR ARCHIVO EXISTENTE -->
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MovieWeb - Buscador de Películas</title>
-    <link rel="stylesheet" href="/css/theme-cyberpunk.css">
-    <style>
-        .hero-section {
-            min-height: 60vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 40px 20px;
-            background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
-        }
+<%- include('partials/header', {
+title: 'MovieWeb - Descubre Películas',
+additionalStyles: ''
+}) %>
 
-        .hero-title {
-            font-size: 4rem;
-            font-weight: 900;
-            margin-bottom: 20px;
-            background: linear-gradient(45deg, var(--neon-pink), var(--neon-blue), var(--neon-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: neonPulse 3s infinite;
-        }
+<!-- Header -->
+<header class="cyber-header">
+    <h1 class="main-title">MOVIEWEB</h1>
+    <p class="subtitle">Descubre películas, actores y directores en un estilo cyberpunk</p>
+</header>
 
-        .hero-subtitle {
-            font-size: 1.3rem;
-            color: var(--text-secondary);
-            margin-bottom: 40px;
-            max-width: 600px;
-        }
+<!-- Buscador Principal -->
+<section class="cyber-section">
+    <form class="search-form" action="/buscar" method="GET" style="display: flex; gap: 10px; max-width: 600px; margin: 0 auto;">
+        <input
+                type="text"
+                name="q"
+                class="cyber-input"
+                placeholder="Buscar películas, actores, directores..."
+                required
+                style="flex: 1;"
+        >
+        <button type="submit" class="btn-cyber">Buscar</button>
+    </form>
+</section>
 
-        .search-container {
-            width: 100%;
-            max-width: 700px;
-            position: relative;
-        }
+<!-- Navegación Rápida -->
+<div class="nav-grid">
+    <a href="/users" class="nav-card">
+        <span class="nav-icon"></span>
+        <div class="nav-title">Ver Usuarios</div>
+        <div class="nav-desc">Explora la comunidad de MovieWeb</div>
+    </a>
 
-        .search-form {
-            display: flex;
-            gap: 10px;
-        }
+    <a href="/activity/feed" class="nav-card">
+        <span class="nav-icon"></span>
+        <div class="nav-title">Feed Global</div>
+        <div class="nav-desc">Actividad reciente de todos los usuarios</div>
+    </a>
 
-        .search-input {
-            flex: 1;
-            padding: 18px 24px;
-            border: 2px solid var(--neon-purple);
-            border-radius: 50px;
-            background: var(--bg-card);
-            color: var(--text-primary);
-            font-size: 1.1rem;
-            transition: var(--transition);
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: var(--neon-blue);
-            box-shadow: var(--shadow-blue);
-        }
-
-        .search-button {
-            padding: 18px 40px;
-            background: linear-gradient(45deg, var(--neon-pink), var(--neon-purple));
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: var(--transition);
-            box-shadow: var(--shadow-pink);
-        }
-
-        .search-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 0 30px rgba(255, 0, 110, 0.6);
-        }
-
-        .genres-section {
-            padding: 60px 40px;
-            max-width: 1800px;
-            margin: 0 auto;
-        }
-
-        .quick-links {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 30px;
-            flex-wrap: wrap;
-        }
-
-        .quick-link {
-            padding: 12px 28px;
-            background: var(--bg-card);
-            border: 2px solid var(--neon-blue);
-            border-radius: 30px;
-            color: var(--neon-blue);
-            text-decoration: none;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-
-        .quick-link:hover {
-            background: var(--neon-blue);
-            color: var(--bg-dark);
-            box-shadow: var(--shadow-blue);
-            transform: translateY(-2px);
-        }
-
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2.5rem;
-            }
-
-            .search-form {
-                flex-direction: column;
-            }
-
-            .search-button {
-                width: 100%;
-            }
-        }
-    </style>
-</head>
-<body>
-<!-- Botón de tema -->
-<button id="theme-toggle" class="theme-toggle">
-    <span id="theme-icon">🌙</span> Tema
-</button>
-
-<!-- Sección Hero con buscador -->
-<div class="hero-section">
-    <h1 class="hero-title">MOVIEWEB</h1>
-    <p class="hero-subtitle">Descubre películas, actores y directores en un estilo cyberpunk</p>
-
-    <div class="search-container">
-        <form action="/buscar" method="GET" class="search-form">
-            <input
-                    type="text"
-                    name="q"
-                    placeholder="Buscar películas, actores, directores..."
-                    class="search-input"
-                    required
-            />
-            <button type="submit" class="search-button">Buscar</button>
-        </form>
-    </div>
-
-    <div class="quick-links">
-        <a href="/users" class="quick-link">👤 Usuarios</a>
-        <a href="/profile/user_abc" class="quick-link">📅 Mi Timeline</a>
-        <a href="/activity/feed" class="quick-link">🌐 Feed Global</a>
-    </div>
-</div>
-
-<!-- Sección de géneros con películas -->
-<div class="genres-section">
-    <% if (genres && genres.length > 0) { %>
-        <% genres.forEach(genre => { %>
-            <% if (genre.movies && genre.movies.length > 0) { %>
-                <div class="content-row animate-slide-in">
-                    <div class="content-row-header">
-                        <h2 class="content-row-title glow-text">
-                            <%= genre.genre_name %>
-                        </h2>
-                        <a href="/genre/<%= genre.genre_id %>" class="view-all-link">
-                            Ver todas →
-                        </a>
-                    </div>
-
-                    <div class="content-row-container">
-                        <button class="scroll-btn scroll-btn-left" onclick="scrollLeft('<%= genre.genre_id %>')">
-                            ‹
-                        </button>
-
-                        <div class="content-row-scroll" id="row-<%= genre.genre_id %>">
-                            <% genre.movies.forEach(movie => { %>
-                                <div class="content-row-item">
-                                    <a href="/pelicula/<%= movie.movie_id %>" style="text-decoration: none;">
-                                        <div class="movie-card">
-                                            <img
-                                                    src="<%= movie.poster_url %>"
-                                                    alt="<%= movie.title %>"
-                                                    loading="lazy"
-                                            >
-                                            <div class="movie-card-info">
-                                                <div class="movie-card-title"><%= movie.title %></div>
-                                                <% if (movie.vote_average) { %>
-                                                    <div class="movie-card-rating">
-                                                        ⭐ <%= movie.vote_average.toFixed(1) %>
-                                                    </div>
-                                                <% } %>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            <% }); %>
-                        </div>
-
-                        <button class="scroll-btn scroll-btn-right" onclick="scrollRight('<%= genre.genre_id %>')">
-                            ›
-                        </button>
-                    </div>
-                </div>
-            <% } %>
-        <% }); %>
+    <% if (currentUser) { %>
+        <a href="/activity/timeline/<%= currentUser.user_id %>" class="nav-card">
+            <span class="nav-icon"></span>
+            <div class="nav-title">Mi Timeline</div>
+            <div class="nav-desc">Tu actividad personal</div>
+        </a>
     <% } else { %>
-        <div style="text-align: center; padding: 60px 20px; color: var(--text-muted);">
-            <p>No hay géneros disponibles en este momento.</p>
-        </div>
+        <a href="/login" class="nav-card">
+            <span class="nav-icon"></span>
+            <div class="nav-title">Iniciar Sesión</div>
+            <div class="nav-desc">Accede a tu cuenta</div>
+        </a>
     <% } %>
 </div>
 
-<script>
-    // Sistema de scroll horizontal para filas de películas
-    function scrollLeft(genreId) {
-        const container = document.getElementById(`row-${genreId}`);
-        container.scrollBy({
-            left: -800,
-            behavior: 'smooth'
-        });
-    }
+<!-- Géneros de Películas -->
+<% if (genres && genres.length > 0) { %>
+    <section class="cyber-section">
+        <h2 class="section-title">Explorar por Géneros</h2>
+        <div class="genres-grid">
+            <% genres.forEach(genre => { %>
+                <a href="/genre/<%= genre.genre_id %>" class="genre-card">
+                    <div class="genre-name"><%= genre.genre_name %></div>
+                    <% if (genre.movie_count) { %>
+                        <div style="font-size: 0.8rem; color: var(--neon-pink); margin-top: 5px;">
+                            <%= genre.movie_count %> películas
+                        </div>
+                    <% } %>
+                </a>
+            <% }); %>
+        </div>
+    </section>
+<% } %>
 
-    function scrollRight(genreId) {
-        const container = document.getElementById(`row-${genreId}`);
-        container.scrollBy({
-            left: 800,
-            behavior: 'smooth'
-        });
-    }
+<!-- Información de Usuario -->
+<% if (currentUser) { %>
+    <section class="cyber-section">
+        <h2 class="section-title">Bienvenido, <%= currentUser.user_name %></h2>
+        <div style="text-align: center;">
+            <p>Estás conectado como <strong class="glow-green">@<%= currentUser.user_username %></strong></p>
+            <div style="margin-top: 15px;">
+                <form action="/logout" method="POST" style="display: inline;">
+                    <button type="submit" class="btn-cyber btn-cyber-danger">Cerrar Sesión</button>
+                </form>
+            </div>
+        </div>
+    </section>
+<% } else { %>
+    <section class="cyber-section">
+        <h2 class="section-title">Únete a la Comunidad</h2>
+        <div style="text-align: center;">
+            <p style="margin-bottom: 15px; color: var(--text-secondary);">Regístrate para guardar tus películas favoritas y escribir reseñas</p>
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                <a href="/register" class="btn-cyber">Registrarse</a>
+                <a href="/login" class="btn-cyber btn-cyber-secondary">Iniciar Sesión</a>
+            </div>
+        </div>
+    </section>
+<% } %>
 
-    // Toggle de tema claro/oscuro
-    const themeToggle = document.getElementById('theme-toggle');
-    const themeIcon = document.getElementById('theme-icon');
+<!-- Footer -->
+<footer class="cyber-footer">
+    <p>MovieWeb © 2025 - Sistema de Gestión de Películas</p>
+    <p style="margin-top: 10px; font-size: 0.9rem;">
+        Desarrollado con Node.js, Express, PostgreSQL y MongoDB
+    </p>
+</footer>
 
-    // Cargar tema guardado
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    if (savedTheme === 'light') {
-        document.body.classList.add('light-theme');
-        themeIcon.textContent = '☀️';
-    }
-
-    themeToggle.addEventListener('click', () => {
-        document.body.classList.toggle('light-theme');
-        const isLight = document.body.classList.contains('light-theme');
-        themeIcon.textContent = isLight ? '☀️' : '🌙';
-        localStorage.setItem('theme', isLight ? 'light' : 'dark');
-    });
-
-    // Ocultar botones de scroll si no es necesario
-    document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.content-row-scroll').forEach(container => {
-            const leftBtn = container.parentElement.querySelector('.scroll-btn-left');
-            const rightBtn = container.parentElement.querySelector('.scroll-btn-right');
-
-            if (container.scrollWidth <= container.clientWidth) {
-                leftBtn.style.display = 'none';
-                rightBtn.style.display = 'none';
-            }
-        });
-    });
-</script>
-</body>
-</html>
+<%- include('partials/footer') %>

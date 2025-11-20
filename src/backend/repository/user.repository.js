@@ -2,18 +2,20 @@ const pool = require('../../../config/db');
 
 class UserRepository {
     async getAllUsers() {
-        const query = 'SELECT * FROM users ORDER BY user_name';
+        const query = 'SELECT * FROM movies.users ORDER BY user_name';
 
         try {
             const result = await pool.query(query);
+            console.log('Usuarios encontrados en BD:', result.rows.length); // Debug
             return result.rows;
         } catch (error) {
+            console.error('Error en getAllUsers:', error);
             throw new Error(`Error obteniendo usuarios: ${error.message}`);
         }
     }
 
     async getUserById(userId) {
-        const query = 'SELECT * FROM users WHERE user_id = $1';
+        const query = 'SELECT * FROM movies.users WHERE user_id = $1';
 
         try {
             const result = await pool.query(query, [userId]);
@@ -24,7 +26,7 @@ class UserRepository {
     }
 
     async getUserByUsername(username) {
-        const query = 'SELECT * FROM users WHERE user_username = $1';
+        const query = 'SELECT * FROM movies.users WHERE user_username = $1';
 
         try {
             const result = await pool.query(query, [username]);
@@ -36,7 +38,7 @@ class UserRepository {
 
     async createUser(userData) {
         const query = `
-            INSERT INTO users (user_username, user_name, user_email)
+            INSERT INTO movies.users (user_username, user_name, user_email)
             VALUES ($1, $2, $3)
             RETURNING *
         `;
@@ -52,7 +54,7 @@ class UserRepository {
 
     async updateUser(userId, userData) {
         const query = `
-            UPDATE users
+            UPDATE movies.users
             SET user_username = $1, user_name = $2, user_email = $3
             WHERE user_id = $4
             RETURNING *
@@ -68,7 +70,7 @@ class UserRepository {
     }
 
     async deleteUser(userId) {
-        const query = 'DELETE FROM users WHERE user_id = $1 RETURNING *';
+        const query = 'DELETE FROM movies.users WHERE user_id = $1 RETURNING *';
 
         try {
             const result = await pool.query(query, [userId]);
@@ -80,16 +82,16 @@ class UserRepository {
 
     async getUserMovies(userId) {
         const query = `
-            SELECT 
-                movie_user.*,
-                movie.title,
-                movie.release_date,
-                movie.overview,
-                movie.vote_average
-            FROM movie_user
-            INNER JOIN movie ON movie_user.movie_id = movie.movie_id
-            WHERE movie_user.user_id = $1
-            ORDER BY movie_user.created_at DESC
+            SELECT
+                mu.*,
+                m.title,
+                m.release_date,
+                m.overview,
+                m.vote_average
+            FROM movies.movie_user mu
+                     INNER JOIN movies.movie m ON mu.movie_id = m.movie_id
+            WHERE mu.user_id = $1
+            ORDER BY mu.created_at DESC
         `;
 
         try {
@@ -102,13 +104,13 @@ class UserRepository {
 
     async addMovieToUser(userId, movieId, rating, opinion) {
         const query = `
-            INSERT INTO movie_user (user_id, movie_id, rating, opinion)
+            INSERT INTO movies.movie_user (user_id, movie_id, rating, opinion)
             VALUES ($1, $2, $3, $4)
-            ON CONFLICT (user_id, movie_id) 
-            DO UPDATE SET 
-                rating = EXCLUDED.rating,
-                opinion = EXCLUDED.opinion,
-                updated_at = CURRENT_TIMESTAMP
+            ON CONFLICT (user_id, movie_id)
+                DO UPDATE SET
+                              rating = EXCLUDED.rating,
+                              opinion = EXCLUDED.opinion,
+                              updated_at = CURRENT_TIMESTAMP
             RETURNING *
         `;
         const values = [userId, movieId, rating, opinion];
@@ -122,7 +124,7 @@ class UserRepository {
     }
 
     async removeMovieFromUser(userId, movieId) {
-        const query = 'DELETE FROM movie_user WHERE user_id = $1 AND movie_id = $2 RETURNING *';
+        const query = 'DELETE FROM movies.movie_user WHERE user_id = $1 AND movie_id = $2 RETURNING *';
 
         try {
             const result = await pool.query(query, [userId, movieId]);
@@ -134,7 +136,7 @@ class UserRepository {
 
     async getUserMovieRating(userId, movieId) {
         const query = `
-            SELECT * FROM movie_user 
+            SELECT * FROM movies.movie_user
             WHERE user_id = $1 AND movie_id = $2
         `;
 

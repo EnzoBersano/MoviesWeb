@@ -1,59 +1,55 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Registro</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-            display: flex;
-            justify-content: center;
-        }
-        .container {
-            width: 350px;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-        }
-        input {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-        }
-        button {
-            width: 100%;
-            margin-top: 15px;
-            padding: 10px;
-            cursor: pointer;
-        }
-        .link {
-            margin-top: 15px;
-            text-align: center;
-        }
-    </style>
-</head>
-<body>
+<%- include('partials/header', {
+title: 'Registro - MovieWeb'
+}) %>
 
-<div class="container">
-    <h2>Crear cuenta</h2>
+<div class="cyber-container">
+    <header class="cyber-header">
+        <h1 class="main-title">CREAR CUENTA</h1>
+        <p class="subtitle">Únete a la comunidad MovieWeb</p>
+    </header>
 
-    <form action="/register" method="POST">
-        <input type="text" name="username" placeholder="Nombre de usuario" required>
+    <section class="cyber-section" style="max-width: 400px; margin: 0 auto;">
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div style="background: rgba(255, 0, 51, 0.2); border: 1px solid var(--neon-red); padding: 15px; border-radius: var(--border-radius); margin-bottom: 20px;">
+                <p style="color: var(--neon-red); margin: 0; text-align: center;"><%= error %></p>
+            </div>
+        <% } %>
 
-        <input type="text" name="name" placeholder="Nombre completo (opcional)">
+        <% if (typeof success !== 'undefined' && success) { %>
+            <div style="background: rgba(0, 255, 65, 0.2); border: 1px solid var(--neon-green); padding: 15px; border-radius: var(--border-radius); margin-bottom: 20px;">
+                <p style="color: var(--neon-green); margin: 0; text-align: center;"><%= success %></p>
+            </div>
+        <% } %>
 
-        <input type="email" name="email" placeholder="Correo electrónico" required>
+        <form action="/register" method="POST">
+            <div style="margin-bottom: 20px;">
+                <input type="text" name="username" class="cyber-input" placeholder="Nombre de usuario" required>
+            </div>
 
-        <input type="password" name="password" placeholder="Contraseña" required>
+            <div style="margin-bottom: 20px;">
+                <input type="text" name="name" class="cyber-input" placeholder="Nombre completo (opcional)">
+            </div>
 
-        <button type="submit">Registrarse</button>
-    </form>
+            <div style="margin-bottom: 20px;">
+                <input type="email" name="email" class="cyber-input" placeholder="Correo electrónico" required>
+            </div>
 
-    <div class="link">
-        <a href="/login">¿Ya tienes cuenta? Iniciar sesión</a>
-    </div>
+            <div style="margin-bottom: 25px;">
+                <input type="password" name="password" class="cyber-input" placeholder="Contraseña" required>
+            </div>
+
+            <button type="submit" class="btn-cyber" style="width: 100%;">REGISTRARSE</button>
+        </form>
+
+        <div style="text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+            <p style="color: var(--text-secondary); margin-bottom: 15px;">
+                ¿Ya tienes cuenta?
+            </p>
+            <a href="/login" class="btn-cyber btn-cyber-secondary" style="display: block; text-decoration: none;">
+                INICIAR SESIÓN
+            </a>
+        </div>
+    </section>
 </div>
 
-</body>
-</html>
+<%- include('partials/footer') %>
